@@ -103,10 +103,12 @@ function tinyPhoto(file){return new Promise((res,rej)=>{const im=new Image();im.
  const s=Math.max(W/im.width,H/im.height),w=im.width*s,h=im.height*s;x.drawImage(im,(W-w)/2,(H-h)/2,w,h);
  let q=.6,u=cv.toDataURL("image/jpeg",q);while(u.length>9000&&q>.25){q-=.1;u=cv.toDataURL("image/jpeg",q)}res(u)};im.onerror=rej;im.src=URL.createObjectURL(file)})}
 function addView(){let data={},photo="";
- const d=modal(`<h3 style="margin:0 0 6px">Add member</h3><label>Bill (PDF)</label><input type="file" id="f" accept="application/pdf"><label>Member photo</label><input type="file" id="ph" accept="image/*"><div class="msg" id="st"></div><div id="form"></div>`);
+ const d=modal(`<h3 style="margin:0 0 6px">Add member</h3><label>Bill (PDF)</label><input type="file" id="f" accept="application/pdf"><label>Member photo</label><div style="display:flex;gap:8px"><button type="button" class="g" style="flex:1" id="cb">📷 Take photo</button><button type="button" class="g" style="flex:1" id="gb">🖼 Gallery</button></div><input type="file" id="ph" accept="image/*" hidden><input type="file" id="cam" accept="image/*" capture="environment" hidden><img id="pv" alt="" style="display:none;width:70px;height:88px;object-fit:cover;border-radius:8px;margin-top:8px"><div class="msg" id="st"></div><div id="form"></div>`);
  const st=m=>d.querySelector("#st").innerHTML=m;
  const F=[["name","Name"],["bio","BIO ID"],["phone","Phone"],["plan","Plan"],["start","Start (dd/mm/yyyy)"],["end","End (dd/mm/yyyy)"],["bill","Bill No"],["billDate","Bill date"],["total","Total"],["paid","Paid"],["due","Due"]];
- d.querySelector("#ph").onchange=async e=>{const f=e.target.files[0];if(f){try{photo=await tinyPhoto(f);st("Photo ready ("+Math.round(photo.length*.75/1024*10)/10+" KB)")}catch(x){st('<span class="err">Could not read photo</span>')}}};
+ const onPhoto=async e=>{const f=e.target.files[0];if(f){try{photo=await tinyPhoto(f);const pv=d.querySelector("#pv");pv.src=photo;pv.style.display="block";st("Photo ready ("+Math.round(photo.length*.75/1024*10)/10+" KB)")}catch(x){st('<span class="err">Could not read photo</span>')}}};
+ d.querySelector("#ph").onchange=onPhoto;d.querySelector("#cam").onchange=onPhoto;
+ d.querySelector("#cb").onclick=()=>d.querySelector("#cam").click();d.querySelector("#gb").onclick=()=>d.querySelector("#ph").click();
  d.querySelector("#f").onchange=async e=>{const f=e.target.files[0];if(!f)return;st("Reading bill…");
   try{data=await readPdf(f)}catch(x){data={};st('<span class="err">Could not read PDF – fill details manually.</span>')}
   if(data.name)st("Bill read. Check details, then save. The bill file is not stored.");
