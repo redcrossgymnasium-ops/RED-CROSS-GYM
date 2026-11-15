@@ -246,7 +246,7 @@ function invoice(s){const J=window.jspdf&&window.jspdf.jsPDF;if(!J||!s)return al
  d.setFontSize(9);d.text(["Red Cross Gym","3rd Floor, Pramukh Chambers, Rander Road,","Tadwadi, Surat, Gujarat 395009","Phone: 7016294385 | redcrossgymnasium@gmail.com"],196,12,{align:"right"});
  d.setFontSize(22);d.setTextColor(217,32,46);d.text("INVOICE",14,44);d.setTextColor(0);d.setFontSize(11);d.text("Invoice No: "+s.inv,14,54);d.text("Date: "+s.date,14,61);d.text("Billed to: "+s.customer,14,68);d.text("Payment mode: "+s.mode,14,75);
  d.setFillColor(217,32,46);d.rect(14,84,182,9,"F");d.setTextColor(255);d.text("Description",18,90);d.text("Amount",192,90,{align:"right"});d.setTextColor(0);
- const g=(+s.amount||0)+(+s.discount||0);d.text(String(s.item||s.type),18,102);d.text(inr(g),192,102,{align:"right"});d.text("Discount",18,112);d.text("- "+inr(s.discount),192,112,{align:"right"});d.line(14,118,196,118);d.setFontSize(13);d.text("Total paid",18,127);d.text(inr(s.amount),192,127,{align:"right"});
+ const g=(+s.amount||0)+(+s.discount||0)+(+s.due||0);d.text(String(s.item||s.type),18,102);d.text(inr(g),192,102,{align:"right"});d.text("Discount",18,112);d.text("- "+inr(s.discount),192,112,{align:"right"});d.line(14,118,196,118);d.setFontSize(13);d.text("Total paid",18,127);d.text(inr(s.amount),192,127,{align:"right"});if(+s.due>0){d.setFontSize(11);d.text("Balance due",18,136);d.text(inr(s.due),192,136,{align:"right"});d.setFontSize(13)}
  d.setFontSize(9);d.text("Thank you for choosing Red Cross Gym. Membership is non-transferable & non-refundable.",14,150);d.save("Invoice-"+s.inv+".pdf")}
 function reportPdf(){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert("PDF tool not loaded. Check your internet and try again.");const q=repData(),d=new J();let y=18;const L=(t,b)=>{d.setFont("helvetica",b?"bold":"normal");d.text(t,14,y);y+=7;if(y>280){d.addPage();y=18}};
  d.setFontSize(16);L("Red Cross Gym - Business Report",1);d.setFontSize(10);L("Period: "+q.r[0]+" to "+q.r[1]);y+=3;L("Total sales: "+inr(q.ts),1);L("Total expenses: "+inr(q.te),1);L("Net profit: "+inr(q.ts-q.te),1);L("Avg sale/day: "+inr(q.ts/q.d)+"   Avg profit/day: "+inr((q.ts-q.te)/q.d)+"   Avg expense/day: "+inr(q.te/q.d));
@@ -266,21 +266,35 @@ function tinyPhoto(file){return new Promise((res,rej)=>{const im=new Image();im.
  const s=Math.max(W/im.width,H/im.height),w=im.width*s,h=im.height*s;x.drawImage(im,(W-w)/2,(H-h)/2,w,h);
  let q=.6,u=cv.toDataURL("image/jpeg",q);while(u.length>9000&&q>.25){q-=.1;u=cv.toDataURL("image/jpeg",q)}res(u)};im.onerror=rej;im.src=URL.createObjectURL(file)})}
 function addView(){let data={},photo="";
- const d=modal(`<h3 style="margin:0 0 6px">Add member</h3><label>Bill (PDF)</label><input type="file" id="f" accept="application/pdf"><label>Member photo</label><div style="display:flex;gap:8px"><button type="button" class="g" style="flex:1" id="cb">📷 Take photo</button><button type="button" class="g" style="flex:1" id="gb">🖼 Gallery</button></div><input type="file" id="ph" accept="image/*" hidden><input type="file" id="cam" accept="image/*" capture="environment" hidden><img id="pv" alt="" style="display:none;width:70px;height:88px;object-fit:cover;border-radius:8px;margin-top:8px"><div class="msg" id="st"></div><div id="form"></div>`);
+ const d=modal(`<h3 style="margin:0 0 6px">Add member</h3><label>Bill (PDF)</label><input type="file" id="f" accept="application/pdf"><button type="button" class="g" id="nb" style="width:100%;margin-top:8px">No bill? Create an invoice instead</button><label>Member photo</label><div style="display:flex;gap:8px"><button type="button" class="g" style="flex:1" id="cb">📷 Take photo</button><button type="button" class="g" style="flex:1" id="gb">🖼 Gallery</button></div><input type="file" id="ph" accept="image/*" hidden><input type="file" id="cam" accept="image/*" capture="environment" hidden><img id="pv" alt="" style="display:none;width:70px;height:88px;object-fit:cover;border-radius:8px;margin-top:8px"><div class="msg" id="st"></div><div id="form"></div>`);
  const st=m=>d.querySelector("#st").innerHTML=m;
  const F=[["name","Name"],["bio","BIO ID"],["phone","Phone"],["plan","Plan"],["start","Start (dd/mm/yyyy)"],["end","End (dd/mm/yyyy)"],["bill","Bill No"],["billDate","Bill date"],["total","Total"],["paid","Paid"],["due","Due"]];
  const onPhoto=async e=>{const f=e.target.files[0];if(f){try{photo=await tinyPhoto(f);const pv=d.querySelector("#pv");pv.src=photo;pv.style.display="block";st("Photo ready ("+Math.round(photo.length*.75/1024*10)/10+" KB)")}catch(x){st('<span class="err">Could not read photo</span>')}}};
  d.querySelector("#ph").onchange=onPhoto;d.querySelector("#cam").onchange=onPhoto;
  d.querySelector("#cb").onclick=()=>d.querySelector("#cam").click();d.querySelector("#gb").onclick=()=>d.querySelector("#ph").click();
- d.querySelector("#f").onchange=async e=>{const f=e.target.files[0];if(!f)return;st("Reading bill…");
-  try{data=await readPdf(f)}catch(x){data={};st('<span class="err">Could not read PDF – fill details manually.</span>')}
-  if(data.name)st("Bill read. Check details, then save. The bill file is not stored.");
-  d.querySelector("#form").innerHTML=F.map(([k,l])=>`<label>${l}</label><input data-k="${k}" value="${esc(data[k])}">`).join("")+'<button style="width:100%;margin-top:14px" id="sv">Save member</button>';
+ const FM=[["name","Name"],["bio","BIO ID"],["phone","Phone (10 digits)"],["plan","Plan / package"],["start","Start (dd/mm/yyyy)"],["end","End (dd/mm/yyyy)"],["total","Package price (Rs.)"],["discount","Discount (Rs.)"],["paid","Amount paid now (blank = full)"]],toD=x=>x.toLocaleDateString("en-GB");
+ const draw=manual=>{d.querySelector("#form").innerHTML=(manual?FM:F).map(([k,l])=>`<label>${l}</label><input data-k="${k}" value="${esc(data[k])}">`).join("")+(manual?'<label>Payment mode</label><select id="md" style="width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font-size:16px"><option>UPI</option><option>Cash</option><option>Card</option></select>':"")+'<button style="width:100%;margin-top:14px" id="sv">'+(manual?"Save member &amp; create invoice":"Save member")+'</button>';
   d.querySelector("#sv").onclick=async()=>{const m={};d.querySelectorAll("[data-k]").forEach(i=>m[i.dataset.k]=i.value.trim());
    if(!m.name||!pd(m.end)){st('<span class="err">Name and a valid end date are required</span>');return}
    if(!photo){st('<span class="err">Please add the member photo</span>');return}
+   let inv,sale=null;
+   if(manual){const tot=+m.total,disc=+m.discount||0;if(!m.bio){st('<span class="err">Enter a BIO ID</span>');return}if(!(tot>0)){st('<span class="err">Enter the package price</span>');return}
+    if(members.some(x=>x.id==="m"+m.bio)){st('<span class="err">This BIO ID already exists</span>');return}
+    const net=Math.max(0,tot-disc),paid=m.paid===""?net:+m.paid,due=Math.max(0,net-paid),mode=d.querySelector("#md").value;
+    m.bill=data.bill;m.billDate=toD(new Date());m.total=String(net);m.paid=String(paid);m.due=String(due);delete m.discount;
+    inv={inv:"RCG-"+String(m.bill).padStart(4,"0"),date:todayS(),customer:m.name,item:m.plan||"Membership",type:"Membership",mode,amount:paid,discount:disc,due};
+    sale={id:"enr"+m.bio+"-"+m.bill,date:todayS(),customer:m.name,memberId:"m"+m.bio,item:m.plan||"Membership",type:"Membership",amount:paid,discount:disc,mode,inv:inv.inv,ref:"bm"+m.bio+"-"+m.bill}}
+   else inv={inv:"RCG-"+String(m.bill||0).padStart(4,"0"),date:todayS(),customer:m.name,item:m.plan||"Membership",type:"Membership",mode:"Online",amount:+m.paid||0,discount:0,due:+m.due||0};
    m.id="m"+(m.bio||Date.now());m.photo=photo;m.added=Date.now();
-   try{await store.set(m);d.remove()}catch(x){st('<span class="err">Save failed – try again</span>')}}};}
+   try{await store.set(m)}catch(x){st('<span class="err">Save failed – try again</span>');return}
+   if(sale&&sale.amount>0){try{await capi({action:"crmput",col:"sales",items:[sale]})}catch(e){}}
+   d.remove();const p=pop("Member enrolled ✔",`<p>${esc(m.name)} has been added.</p><button id="iv" style="width:100%">⬇ Download invoice (PDF)</button>`);p.querySelector("#iv").onclick=()=>invoice(inv)}};
+ d.querySelector("#nb").onclick=()=>{data={bio:String(Math.max(0,...members.map(x=>+x.bio||0))+1),bill:String(Math.max(0,...members.map(x=>+x.bill||0))+1),start:toD(new Date())};st("Fill in the details and save. An invoice PDF is created for you.");draw(true)};
+ d.querySelector("#f").onchange=async e=>{const f=e.target.files[0];if(!f)return;st("Reading bill…");
+  try{data=await readPdf(f)}catch(x){data={};st('<span class="err">Could not read PDF – fill details manually.</span>')}
+  if(data.name)st("Bill read. Check details, then save. The bill file is not stored.");
+  draw(false)}}
+
 (async()=>{await initStore();try{creds=JSON.parse(ls.g("rcg_cred")||"null")}catch(e){}role=creds&&API?ls.g("rcg_role"):null;if(!role){mphone=ls.g("rcg_member")||null;try{mmem=JSON.parse(ls.g("rcg_mcache")||"[]")}catch(e){}}render();refresh()})();
 
 </script></body></html>
