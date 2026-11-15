@@ -105,9 +105,30 @@ function card(m,i){return`<div class="id" data-id="${esc(m.id)}"><div class="top
 function modal(h){const d=document.createElement("div");d.className="modal";d.innerHTML=`<div class="box">${h}</div>`;d.onclick=e=>{if(e.target===d)d.remove()};document.body.appendChild(d);return d}
 function detail(id){const m=members.find(x=>x.id===id);if(!m)return;const i=info(m);
  const d=modal(`${card(m,i)}<div style="margin-top:12px;font-size:14px;line-height:1.8">Bill No: <b>${esc(m.bill)}</b> · ${esc(m.billDate)}<br>Total: <b>Rs. ${esc(m.total)}</b> · Paid: <b>Rs. ${esc(m.paid)}</b> · Due: <b>Rs. ${esc(m.due)}</b></div>
-<div style="display:flex;gap:8px;margin-top:12px"><button class="g" style="flex:1" id="x">Close</button>${role==="owner"?'<button style="flex:1;background:#8a1018" id="del">Delete</button>':""}</div>`);
- d.querySelector(".id").onclick=null;d.querySelector("#x").onclick=()=>d.remove();
+<div style="display:flex;gap:8px;margin-top:12px"><button class="g" style="flex:1" id="x">Close</button>${role==="owner"&&(i.st[0]==="Expired"||i.st[0]==="Expiring soon")?'<button style="flex:1" id="rn">Renew</button>':""}${role==="owner"?'<button style="flex:1;background:#8a1018" id="del">Delete</button>':""}</div>`);
+ d.querySelector(".id").onclick=null;if(d.querySelector("#rn"))d.querySelector("#rn").onclick=()=>{d.remove();renewView(m)};d.querySelector("#x").onclick=()=>d.remove();
  if(role==="owner")d.querySelector("#del").onclick=async()=>{if(confirm("Delete "+m.name+"?")){await store.del(m.id);d.remove()}}}
+/* renew member */
+function renewView(m){let photo="";
+ const d=modal(`<h3 style="margin:0 0 2px">Renew membership</h3><div class="msg" style="margin:0 0 6px">${esc(m.name)} · BIO ${esc(m.bio)}</div><label>New bill (PDF)</label><input type="file" id="f" accept="application/pdf">
+<label>Latest photo (optional – old photo is kept if you skip)</label><div style="display:flex;gap:8px"><button type="button" class="g" style="flex:1" id="cb">📷 Take photo</button><button type="button" class="g" style="flex:1" id="gb">🖼 Gallery</button></div><input type="file" id="ph" accept="image/*" hidden><input type="file" id="cam" accept="image/*" capture="environment" hidden><img id="pv" alt="" style="display:none;width:70px;height:88px;object-fit:cover;border-radius:8px;margin-top:8px">
+<div class="msg" id="st"></div><div id="form"></div>`);
+ const st=x=>d.querySelector("#st").innerHTML=x;
+ const F=[["name","Name"],["phone","Phone"],["plan","Plan"],["start","Start (dd/mm/yyyy)"],["end","End (dd/mm/yyyy)"],["bill","Bill No"],["billDate","Bill date"],["total","Total"],["paid","Paid"],["due","Due"]];
+ let data={name:m.name,phone:m.phone};
+ const draw=()=>{d.querySelector("#form").innerHTML=F.map(([k,l])=>`<label>${l}</label><input data-k="${k}" value="${esc(data[k])}">`).join("")+'<button style="width:100%;margin-top:14px" id="sv">Save renewal</button>';
+  d.querySelector("#sv").onclick=async()=>{const v={};d.querySelectorAll("[data-k]").forEach(i=>v[i.dataset.k]=i.value.trim());
+   if(!pd(v.start)||!pd(v.end)){st('<span class="err">Enter valid start and end dates (dd/mm/yyyy)</span>');return}
+   if(data.bio&&data.bio!==m.bio&&!confirm("This bill is for BIO ID "+data.bio+", not "+m.bio+". Save anyway?"))return;
+   const n={...m,...v,id:m.id,bio:m.bio,photo:photo||m.photo,renewed:Date.now()};
+   try{await store.set(n);d.remove()}catch(x){st('<span class="err">Save failed – try again</span>')}}};
+ draw();
+ const onPhoto=async e=>{const f=e.target.files[0];if(f){try{photo=await tinyPhoto(f);const pv=d.querySelector("#pv");pv.src=photo;pv.style.display="block";st("Photo ready")}catch(x){st('<span class="err">Could not read photo</span>')}}};
+ d.querySelector("#ph").onchange=onPhoto;d.querySelector("#cam").onchange=onPhoto;
+ d.querySelector("#cb").onclick=()=>d.querySelector("#cam").click();d.querySelector("#gb").onclick=()=>d.querySelector("#ph").click();
+ d.querySelector("#f").onchange=async e=>{const f=e.target.files[0];if(!f)return;st("Reading bill…");
+  try{const r=await readPdf(f);data={...r,name:m.name,phone:m.phone};st(r.bio&&r.bio!==m.bio?'<span class="err">Warning: this bill is for BIO ID '+esc(r.bio)+', not '+esc(m.bio)+'.</span>':"Bill read. Check the details, then save.")}catch(x){st('<span class="err">Could not read PDF – fill details manually.</span>')}
+  draw()}}
 /* add member */
 async function readPdf(file){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
  const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;let t="";
