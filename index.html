@@ -505,6 +505,7 @@ async function receipt(r){try{const m=members.find(x=>String(x.bio)===String(r.b
 function receipt0(r){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert("PDF tool not loaded. Check your internet and try again.");
  const d=new J({unit:"mm",format:"a4"}),C=INV,RED=C.RED,DK=C.DK,GR=C.GR,LT=C.LT,GN=C.GN,OR=C.OR,PK=C.PK,LN=C.LN,X0=15,CW=180,Y0=18,Y1=283,GAP=5;
  const lg=document.querySelector("header img"),ar=lg&&lg.naturalWidth?lg.naturalWidth/lg.naturalHeight:3.5;
+ const gen=(()=>{try{const o=new Date().toLocaleString("en-GB",{timeZone:"Asia/Kolkata",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});return o.replace(",","").replace(/\b(am|pm)\b/,x=>x.toUpperCase())}catch(e){return new Date().toLocaleString()}})();
  const invNo="RCG-"+String(r.bill).padStart(4,"0"),a0=pd(r.start),b0=pd(r.end),days=a0&&b0?Math.round((b0-a0)/864e5)+1:0,due=+r.due>0,issued=r.billDate+(r.billTime?"  |  "+r.billTime:"");
  /* measuring stand-in: same text metrics, draws nothing */
  const stub=new Proxy({},{get:(t,k)=>["setFont","setFontSize","getTextWidth","splitTextToSize"].includes(k)?(...a)=>d[k](...a):()=>undefined});
@@ -530,7 +531,7 @@ function receipt0(r){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert
  const card=(i,l)=>{d.setFillColor(...LT);d.roundedRect(cx(i),cy,cw,chh,2.5,2.5,"F");d.setFillColor(...RED);d.rect(cx(i),cy,1.2,chh,"F");h1.F("bold",7);h1.K(RED);h1.T(l,cx(i)+5,cy+6)};
  card(0,"BILLED TO");{const nm=String(r.name||"");h1.F("bold",12);const big=d.getTextWidth(nm)<=cw-9,L=big?[nm]:(h1.F("bold",10),d.splitTextToSize(nm,cw-9).slice(0,2));h1.F("bold",big?12:10);h1.K(DK);L.forEach((s,i)=>h1.T(s,cx(0)+5,cy+13+i*5));const yy=cy+13+L.length*5+1.5;h1.F("bold",9.5);h1.K(RED);h1.T("BIO ID: "+r.bio,cx(0)+5,yy+2);h1.F("normal",9);h1.K(DK);h1.T("Phone: "+(r.phone||"-"),cx(0)+5,yy+8.5)}
  card(1,"PLAN & VALIDITY");{h1.F("bold",9.5);const L=d.splitTextToSize(r.plan||"Membership",cw-9).slice(0,2);h1.K(DK);L.forEach((s,i)=>h1.T(s,cx(1)+5,cy+13+i*4.6));const yy=cy+13+L.length*4.6+1.5;h1.F("normal",8.8);h1.T("Valid from: "+r.start,cx(1)+5,yy+2);h1.T("Valid till: "+(r.end||"-"),cx(1)+5,yy+7.5);h1.K(GR);h1.T("Duration: "+days+" days",cx(1)+5,yy+13)}
- card(2,"INVOICE DETAILS");h1.F("normal",8.6);h1.K(DK);[["Invoice No",invNo],["Date",r.billDate],["Time",r.billTime||"-"],["Type",r.type],["Bill No",r.bill]].forEach((p,i)=>{h1.F("normal",8.6);h1.K(GR);h1.T(p[0]+":",cx(2)+5,cy+12.5+i*4.7);h1.F("bold",8.6);h1.K(DK);h1.T(String(p[1]),cx(2)+cw-4,cy+12.5+i*4.7,{align:"right"})});
+ card(2,"INVOICE DETAILS");h1.F("normal",8.6);h1.K(DK);[["Invoice No",invNo],["Copy date",gen.split(" ")[0]],["Copy time",gen.split(" ").slice(1).join(" ")],["Type",r.type],["Bill No",r.bill]].forEach((p,i)=>{h1.F("normal",8.6);h1.K(GR);h1.T(p[0]+":",cx(2)+5,cy+12.5+i*4.7);h1.F("bold",8.6);h1.K(DK);h1.T(String(p[1]),cx(2)+cw-4,cy+12.5+i*4.7,{align:"right"})});
  /* item table */
  let y=cy+chh+5;d.setFillColor(...DK);d.roundedRect(X0,y,CW,8,2,2,"F");h1.F("bold",8);d.setTextColor(255,255,255);h1.T("DESCRIPTION",19,y+5.3);h1.T("VALIDITY",118,y+5.3);h1.T("AMOUNT",X0+CW-4,y+5.3,{align:"right"});y+=8;
  {h1.F("bold",10);const L=d.splitTextToSize(r.plan||"Membership",92).slice(0,2),rh=Math.max(13,L.length*5+7);h1.F("bold",10);h1.K(DK);L.forEach((s,i)=>h1.T(s,19,y+6+i*5));h1.F("normal",7.5);h1.K(GR);h1.T("Duration "+days+" days",19,y+6+L.length*5);
@@ -636,7 +637,7 @@ function receipt0(r){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert
   pages.forEach(q=>q.items.sort((a,b)=>a.o-b.o));
  /* draw pages 2+: running header, blocks with evenly stretched gaps, notes fill the last page */
  const NOTES_MIN=34;
- pages.forEach((P,pi)=>{if(pi>0){d.addPage();top();const h=H(d);h.F("bold",7);h.K(GR);h.T("RED CROSS GYM  |  Invoice "+invNo,X0,12.4);h.F("normal",7);h.T(String(r.name)+"  |  BIO ID "+r.bio,X0+CW,12.4,{align:"right"});d.setDrawColor(...LN);d.setLineWidth(.25);d.line(X0,14.6,X0+CW,14.6)}
+ pages.forEach((P,pi)=>{if(pi>0){d.addPage();top();const h=H(d);h.F("bold",7);h.K(GR);h.T("RED CROSS GYM  |  Invoice "+invNo,X0,12.4);h.F("normal",7);h.T(String(r.name)+"  |  BIO ID "+r.bio+"  |  Copy "+gen,X0+CW,12.4,{align:"right"});d.setDrawColor(...LN);d.setLineWidth(.25);d.line(X0,14.6,X0+CW,14.6)}
   const isLast=pi===pages.length-1,its=P.items,n=its.length;if(!n)return;let extra=0,notes=0;
   if(isLast&&P.cap>=NOTES_MIN+GAP+4){notes=P.cap-GAP;its.splice(n-1,0,{id:"notes",h:notes,fn:(D,yy)=>{const h=H(D),bh=band(D,yy,"MY GOALS & NOTES","WRITE IT. TRACK IT. ACHIEVE IT");let y2=yy+bh+3;[["Starting weight (kg)",r.wt&&r.wt.length?r.wt[0][1]+" kg":""],["Target weight (kg)",""],["My fitness goal",""]].forEach((l,i)=>{const x=X0+i*61;D.setFillColor(...LT);D.roundedRect(x,y2,58,15,2.5,2.5,"F");h.F("bold",6.8);h.K(RED);h.T(l[0].toUpperCase(),x+4,y2+5.4);if(l[1]){h.F("bold",10);h.K(DK);h.T(l[1],x+4,y2+11.4)}D.setDrawColor(200,203,210);D.setLineWidth(.3);D.line(x+4,y2+12.6,x+54,y2+12.6)});y2+=19;
     if(r.wt&&r.wt.length>1){const f=+r.wt[0][1],t=+r.wt[r.wt.length-1][1],dl=t-f;h.F("bold",8);h.K(DK);h.T("Latest weight: "+t+" kg ("+r.wt[r.wt.length-1][0].split("-").reverse().join("/")+")   |   Change since start: "+(dl>0?"+":"")+dl.toFixed(1)+" kg",X0,y2+2);y2+=6}
@@ -644,7 +645,7 @@ function receipt0(r){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert
   const items=its,gaps=items.length-1,free=Math.max(0,P.cap);extra=gaps>0?Math.min(8,free/gaps):0;let yy=P.y0+(P.p1?GAP:0);
   items.forEach((b,i)=>{b.fn(d,yy);yy+=b.h+GAP+extra})});
  /* footer on every page */
- const n=d.getNumberOfPages();for(let p=1;p<=n;p++){d.setPage(p);d.setFillColor(...RED);d.rect(0,289,210,8,"F");const h=H(d);h.F("normal",7.4);d.setTextColor(255,255,255);h.T("Red Cross Gym  |  +917016294385  |  redcrossgymnasium@gmail.com",X0,294);h.T("Page "+p+" of "+n,X0+CW,294,{align:"right"})}
+ const n=d.getNumberOfPages();for(let p=1;p<=n;p++){d.setPage(p);d.setFillColor(...RED);d.rect(0,289,210,8,"F");const h=H(d);h.F("normal",7.4);d.setTextColor(255,255,255);h.T("Red Cross Gym  |  +917016294385  |  redcrossgymnasium@gmail.com",X0,294);h.T("Page "+p+" of "+n,X0+CW,294,{align:"right"});}
  const meta={v:1,name:r.name,bio:String(r.bio),phone:r.phone||"",plan:r.plan,start:r.start,end:r.end,bill:String(r.bill),billDate:r.billDate,type:r.type,price:r.price,disc:r.disc,reg:r.reg,total:r.total,paid:r.paid,due:r.due,mode:r.mode};
  d.setProperties({title:"Invoice "+invNo+" - "+r.name,subject:"Red Cross Gym invoice",author:"Red Cross Gym",creator:"Red Cross Gym Manager",keywords:"RCGDATA:"+btoa(unescape(encodeURIComponent(JSON.stringify(meta))))});
  d.save("Invoice-"+r.bill+"-"+String(r.name).replace(/\W+/g,"_")+".pdf")}
