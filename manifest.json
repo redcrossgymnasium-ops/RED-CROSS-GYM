@@ -1,0 +1,14 @@
+{
+  "name": "Red Cross Gym",
+  "short_name": "Red Cross Gym",
+  "description": "Red Cross Gym member app: check in, track attendance, plans and invoices.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d9202e",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
