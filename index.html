@@ -64,7 +64,26 @@ function info(m){const s=pd(m.start),e=pd(m.end),t=new Date();t.setHours(0,0,0,0
 let API=(window.RCG_API||"").trim()||ls.g("rcg_api")||"",creds=null;
 const post=(body,ms)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),ms||25000);return fetch(API,{method:"POST",body:JSON.stringify(body),signal:c.signal}).then(r=>r.json()).finally(()=>clearTimeout(t))};
 async function api(body){return post({...creds,...body})}
-function apply(d){members=Object.values(d||{});ls.s("rcg_cache",JSON.stringify(members))}
+function apply(d){members=Object.values(d||{});MB={};members.forEach(m=>MB[m.id]=m);ls.s("rcg_cache",JSON.stringify(members))}
+/* scale layer: lazy photos, changes-only sync, on-demand history */
+let MB={},lastNow=0;const PH={},PHV={},LM={},PHX="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+const phs=m=>(m&&(m.photo||PH[m.id]))||"";
+let _idb;function idb(){return _idb||(_idb=new Promise(r=>{try{const q=indexedDB.open("rcgph",1);q.onupgradeneeded=()=>q.result.createObjectStore("p");q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}}))}
+async function idbGet(ids){const db=await idb();if(!db||!ids.length)return{};return new Promise(res=>{const o={};let n=ids.length;try{const st=db.transaction("p").objectStore("p");ids.forEach(id=>{const g=st.get(id);g.onsuccess=()=>{if(g.result)o[id]=g.result;if(!--n)res(o)};g.onerror=()=>{if(!--n)res(o)}})}catch(e){res({})}})}
+async function idbPut(o){const db=await idb();if(!db)return;try{const st=db.transaction("p","readwrite").objectStore("p");for(const id in o)st.put(o[id],id)}catch(e){}}
+function paintPh(id){if(!PH[id])return;document.querySelectorAll('img[data-pid="'+id+'"]').forEach(i=>{if(i.src!==PH[id])i.src=PH[id]})}
+async function needPh(ids){ids=[...new Set(ids)].filter(id=>!PH[id]&&MB[id]&&!MB[id].photo);if(!ids.length)return;
+ try{const c=await idbGet(ids),miss=[];ids.forEach(id=>{const pv=MB[id].pv||0;if(c[id]&&c[id].pv===pv){PH[id]=c[id].d;PHV[id]=pv;paintPh(id)}else miss.push(id)});
+ for(let i=0;i<miss.length;i+=30){const part=miss.slice(i,i+30),r=await api({action:"photos",ids:part});if(r.photos){const put={};for(const id in r.photos){PH[id]=r.photos[id];PHV[id]=(MB[id]||{}).pv||0;put[id]={pv:PHV[id],d:r.photos[id]};paintPh(id)}idbPut(put)}}}catch(e){}}
+let _pq=[],_pt=0,_io=null;
+function queuePh(id){_pq.push(id);clearTimeout(_pt);_pt=setTimeout(()=>{const l=_pq;_pq=[];needPh(l)},120)}
+function fillPh(){if(!creds)return;document.querySelectorAll("img[data-pid]").forEach(i=>{const id=i.dataset.pid;if(PH[id]){if(i.src!==PH[id])i.src=PH[id];return}const m=MB[id];if(!m||m.photo||i._o)return;i._o=1;if(window.IntersectionObserver){_io=_io||new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){_io.unobserve(e.target);queuePh(e.target.dataset.pid)}}),{rootMargin:"500px"});_io.observe(i)}else queuePh(id)})}
+let _ft=0;try{new MutationObserver(()=>{clearTimeout(_ft);_ft=setTimeout(fillPh,60)}).observe(document.body,{childList:true,subtree:true})}catch(e){}
+function mergeAtt(a,from){const o={};new Set([...Object.keys(attm),...Object.keys(a)]).forEach(id=>{const l=(attm[id]||[]).filter(x=>x.slice(0,10)<from).concat(a[id]||[]);if(l.length)o[id]=l});attm=o}
+function applyList(r){const cur={};if(r.ids){r.ids.forEach(id=>{if(MB[id])cur[id]=MB[id]})}
+ const ch=r.members||{};for(const id in ch){const n=ch[id];if(cur[id]&&PHV[id]!==undefined&&PHV[id]!==(n.pv||0)){delete PH[id];delete PHV[id]}cur[id]=n}
+ apply(cur);if(r.att){r.attFrom?mergeAtt(r.att,r.attFrom):(attm=r.att)}if(r.wt)wtm=r.wt;if(r.now&&r.ids)lastNow=r.now}
+async function loadMem(id){if(LM[id]&&Date.now()-LM[id]<60000)return;try{const r=await api({action:"memdata",id});if(r.att){attm[id]=r.att;wtm[id]=r.wt||[];LM[id]=Date.now()}}catch(e){}}
 let loading=false,lastSig="",netBad=false,lim=60,tm=0,synced=false,lastExpi=[];
 const SK=[1,2,3,4,5,6].map(()=>'<div class="sk" style="height:150px"></div>').join("");
 function toast(t){let e=$("#toast");if(!e){e=document.createElement("div");e.id="toast";document.body.appendChild(e)}e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),2200)}
@@ -72,9 +91,9 @@ function setNet(b){if(netBad===b)return;netBad=b;const n=$("#net");if(n)n.hidden
 async function refresh(){
  if(!creds&&mphone&&API){try{const r=await mfetch(mphone,mbio);if(r.members){setNet(false);const sig=JSON.stringify(r.members);if(sig!==lastSig){lastSig=sig;mmem=r.members;ls.s("rcg_mcache",sig);render()}}}catch(e){setNet(true)}return}
  if(!creds||!API)return;
- try{const r=await api({action:"list"});if(r.members){const was=loading,sig=JSON.stringify([r.members,r.att||0,r.wt||0]);loading=false;setNet(false);if(sig!==lastSig||was){lastSig=sig;apply(r.members);attm=r.att||attm;wtm=r.wt||wtm;render()}if(role==="owner"&&!synced){synced=true;setTimeout(async()=>{try{const n=await syncBills();if(n)toast(n+" member bills added to Sales")}catch(e){}},1500)}}}catch(e){setNet(true)}}
+ try{const r=await api({action:"list",since:lastNow});if(r.members){const was=loading,nch=Object.keys(r.members).length,sig=JSON.stringify([r.ids?r.ids.length:0,r.att||0,r.wt||0,r.ids?0:r.members]);loading=false;setNet(false);if(sig!==lastSig||was||(r.ids&&nch)){lastSig=sig;applyList(r);render()}else if(r.now&&r.ids)lastNow=r.now;if(role==="owner"&&!synced){synced=true;setTimeout(async()=>{try{const n=await syncBills();if(n)toast(n+" member bills added to Sales")}catch(e){}},1500)}}}catch(e){setNet(true)}}
 async function initStore(){try{members=JSON.parse(ls.g("rcg_cache")||"[]")}catch(e){}
- store={set:async m=>{const r=await api({action:"set",member:m});if(r.error)throw 0;await refresh()},del:async id=>{const r=await api({action:"del",id});if(r.error)throw 0;await refresh()}};
+ store={set:async m=>{const r=await api({action:"set",member:m});if(r.error)throw 0;await refresh();if(m.photo&&m.photo.indexOf("data:")===0){PH[m.id]=m.photo;PHV[m.id]=(MB[m.id]||{}).pv||0;paintPh(m.id);idbPut({[m.id]:{pv:PHV[m.id],d:m.photo}})}},del:async id=>{const r=await api({action:"del",id});if(r.error)throw 0;await refresh()}};
  setInterval(()=>{if(!document.hidden&&!document.querySelector(".modal"))refresh()},45000);document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!document.querySelector(".modal"))refresh()})}
 /* member area */
 const mfetch=(p,b)=>post({action:"member",phone:p,bio:b});
@@ -190,7 +209,7 @@ function loginView(msg){if(!$("#sitecss"))document.head.insertAdjacentHTML("befo
  if(dg.length>=10&&!/[a-z]/i.test(uid)){const ph=dg.slice(-10),bio=pw.replace(/\D/g,"");
   try{const r=await mfetch(ph,bio),mine=(r.members||[]).filter(x=>String(x.id)==="m"+bio);if(!mine.length)return loginView("Incorrect phone number or BIO ID");mphone=ph;mbio=bio;mmem=mine;lastSig="";ls.s("rcg_member",ph);ls.s("rcg_mbio",bio);ls.s("rcg_mcache",JSON.stringify(mine));render()}catch(e){loginView("Cannot reach server. Check your internet.")}return}
  creds={user:uid.toLowerCase(),pw:$("#p").value};
- try{const r=await api({action:"list"});if(r.error){creds=null;return loginView("Incorrect ID or password")}role=r.role;apply(r.members);attm=r.att||{};wtm=r.wt||{};ls.s("rcg_cred",JSON.stringify(creds));ls.s("rcg_role",role);render();if(role==="owner")setTimeout(refresh,700)}catch(e){creds=null;loginView("Cannot reach server. Check internet or sync URL")}};
+ try{const r=await api({action:"list"});if(r.error){creds=null;return loginView("Incorrect ID or password")}role=r.role;lastNow=0;attm={};wtm={};applyList(r);ls.s("rcg_cred",JSON.stringify(creds));ls.s("rcg_role",role);render();if(role==="owner")setTimeout(refresh,700)}catch(e){creds=null;loginView("Cannot reach server. Check internet or sync URL")}};
 
  $("#lf").onsubmit=e=>{e.preventDefault();go()};$("#sp").onchange=e=>{$("#p").type=e.target.checked?"text":"password"};siteInit(msg)}
 /* main */
@@ -212,14 +231,15 @@ function render(){
 function listPart(){const l=members.map(m=>({m,i:info(m)})).filter(x=>(x.m.name+x.m.bio+x.m.phone).toLowerCase().includes(q.toLowerCase())&&(flt==="all"||x.i.st[0]===flt)).sort((a,b)=>a.i.left-b.i.left);return{n:l.length,html:l.slice(0,lim).map(({m,i})=>card(m,i)).join("")+(l.length>lim?`<button class="g" id="more" style="grid-column:1/-1">Show more (${l.length-lim})</button>`:"")||'<p class="msg">No members in this list.</p>'}}
 function bindCards(){document.querySelectorAll("#lst [data-id]").forEach(el=>el.onclick=()=>detail(el.dataset.id));const mb=$("#more");if(mb)mb.onclick=()=>{lim+=60;const P=listPart();$("#lst").innerHTML=P.html;bindCards()}}
 function card(m,i){return`<div class="id" data-id="${esc(m.id)}"><div class="top"><span>RED CROSS GYM</span><span>BIO ${esc(m.bio)}</span></div>
-<div class="bd"><img class="ph" loading="lazy" decoding="async" src="${esc(m.photo||"")}" alt=""><div><h3>${esc(m.name)}</h3><p>${esc(m.phone)}</p><p>${esc(m.plan)}</p><span class="pill" style="background:${i.st[1]}">${i.st[0]}</span></div></div>
+<div class="bd"><img class="ph" loading="lazy" decoding="async" data-pid="${esc(m.id)}" src="${esc(phs(m)||PHX)}" alt=""><div><h3>${esc(m.name)}</h3><p>${esc(m.phone)}</p><p>${esc(m.plan)}</p><span class="pill" style="background:${i.st[1]}">${i.st[0]}</span></div></div>
 <div class="days"><span>${fmt(pd(m.start))} → ${fmt(pd(m.end))}</span><span><b>${i.left}</b> days left</span></div><div class="bar"><i style="width:${i.pct}%;background:${i.st[1]}"></i></div></div>`}
 function modal(h){const d=document.createElement("div");d.className="modal";d.innerHTML=`<div class="box">${h}</div>`;d.onclick=e=>{if(e.target===d)d.remove()};document.body.appendChild(d);return d}
 function detail(id){const m=members.find(x=>x.id===id);if(!m)return;const i=info(m);
- const d=modal(`${card(m,i)}<div style="margin-top:12px;font-size:14px;line-height:1.8">Bill No: <b>${esc(m.bill)}</b> · ${esc(m.billDate)}<br>Total: <b>Rs. ${esc(m.total)}</b> · Paid: <b>Rs. ${esc(m.paid)}</b> · Due: <b>Rs. ${esc(m.due)}</b></div><div style="margin-top:6px;font-size:14px;line-height:1.8">${asum(m.id)}</div>${calWidget("d"+m.id,attm[m.id]||[],m.start,m.end)}${wtRead(m)}
+ const d=modal(`${card(m,i)}<div style="margin-top:12px;font-size:14px;line-height:1.8">Bill No: <b>${esc(m.bill)}</b> · ${esc(m.billDate)}<br>Total: <b>Rs. ${esc(m.total)}</b> · Paid: <b>Rs. ${esc(m.paid)}</b> · Due: <b>Rs. ${esc(m.due)}</b></div><div id="dm-as" style="margin-top:6px;font-size:14px;line-height:1.8">${asum(m.id)}</div><div id="dm-cal">${calWidget("d"+m.id,attm[m.id]||[],m.start,m.end)}</div><div id="dm-wt">${wtRead(m)}</div>
 <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px"><button class="g" style="flex:1" id="x">Close</button><button style="flex:1;background:#2563eb" id="idb">ID Card PDF</button><button style="flex:1;background:#17a2b8" id="ivb">Invoice PDF</button>${role==="owner"&&(i.st[0]==="Expired"||i.st[0]==="Expiring soon")?'<button style="flex:1" id="rn">Renew</button>':""}${role==="owner"?'<button style="flex:1;background:#8a1018" id="del">Delete</button>':""}</div>`);
- d.querySelector(".id").onclick=null;d.querySelector("#idb").onclick=()=>idCard(m);if(d.querySelector("#ivb"))d.querySelector("#ivb").onclick=()=>receipt(rcFromMember(m));if(d.querySelector("#rn"))d.querySelector("#rn").onclick=()=>{d.remove();renewView(m)};d.querySelector("#x").onclick=()=>d.remove();
- if(role==="owner")d.querySelector("#del").onclick=async()=>{if(confirm("Delete "+m.name+"?")){await store.del(m.id);d.remove();toast("Member deleted")}}}
+ d.querySelector(".id").onclick=null;d.querySelector("#idb").onclick=async()=>{await needPh([m.id]);idCard(m)};if(d.querySelector("#ivb"))d.querySelector("#ivb").onclick=async()=>{await loadMem(m.id);receipt(rcFromMember(m))};if(d.querySelector("#rn"))d.querySelector("#rn").onclick=()=>{d.remove();renewView(m)};d.querySelector("#x").onclick=()=>d.remove();
+ if(role==="owner")d.querySelector("#del").onclick=async()=>{if(confirm("Delete "+m.name+"?")){await store.del(m.id);d.remove();toast("Member deleted")}};
+ loadMem(m.id).then(()=>{if(!d.isConnected)return;const a=d.querySelector("#dm-as"),c=d.querySelector("#dm-cal"),w=d.querySelector("#dm-wt");if(a)a.innerHTML=asum(m.id);if(c)c.innerHTML=calWidget("d"+m.id,attm[m.id]||[],m.start,m.end);if(w)w.innerHTML=wtRead(m)})}
 /* renew member */
 function renewView(m){let photo="";
  const d=modal(`<h3 style="margin:0 0 2px">Renew membership</h3><div class="msg" style="margin:0 0 6px">${esc(m.name)} · BIO ${esc(m.bio)}</div><label>New bill (PDF)</label><input type="file" id="f" accept="application/pdf">
@@ -379,7 +399,7 @@ function receipt0(r){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert
  const pay={v:1,name:r.name,bio:String(r.bio),phone:r.phone||"",plan:r.plan,start:r.start,end:r.end,bill:String(r.bill),billDate:r.billDate,type:r.type,price:r.price,disc:r.disc,reg:r.reg,total:r.total,paid:r.paid,due:r.due,mode:r.mode};
  d.setProperties({title:"Invoice "+invNo+" - "+r.name,subject:"Red Cross Gym invoice",author:"Red Cross Gym",creator:"Red Cross Gym Manager",keywords:"RCGDATA:"+btoa(unescape(encodeURIComponent(JSON.stringify(pay))))});
  d.save("Invoice-"+r.bill+"-"+String(r.name).replace(/\W+/g,"_")+".pdf");if(bErr)alert("Your invoice was downloaded, but the brochure pages had a problem: "+bErr)}
-function invoice(s){const m=members.find(x=>x.id===s.memberId)||{},p=s.date.split("-").reverse().join("/"),a=+s.amount||0,dc=+s.discount||0,du=+s.due||0,price=s.price!==undefined?+s.price:a+dc+du,tot=s.total!==undefined?+s.total:a+du;
+async function invoice(s){if(s.memberId)await loadMem(s.memberId);const m=members.find(x=>x.id===s.memberId)||{},p=s.date.split("-").reverse().join("/"),a=+s.amount||0,dc=+s.discount||0,du=+s.due||0,price=s.price!==undefined?+s.price:a+dc+du,tot=s.total!==undefined?+s.total:a+du;
  receipt({name:s.customer,bio:s.bio||m.bio||"-",phone:s.phone||m.phone||"",bill:s.bill||String(s.inv).replace(/\D/g,"").replace(/^0+/,"")||s.inv,billDate:p,type:s.rtype||(s.type==="PT"?"Personal Training":"Sale"),plan:s.item,start:s.start||m.start||p,end:s.end||m.end||"",price,disc:dc,reg:+s.reg||0,total:tot,paid:a,due:du,mode:s.mode==="UPI"?"Online":s.mode,att:attm[s.memberId]||[]})}
 const rng=()=>{const n=new Date(),y=n.getFullYear(),m=n.getMonth();let f,t=todayS();if(R.k==="today")f=t;else if(R.k==="week"){const w=new Date();w.setDate(w.getDate()-6);f=iso(w)}else if(R.k==="month")f=iso(new Date(y,m,1));else if(R.k==="year")f=iso(new Date(y,0,1));else if(R.k==="all")f="2000-01-01";else{f=R.from||iso(new Date(y,m,1));t=R.to||t}return[f,t]};
 const inR=(x,r)=>x.date>=r[0]&&x.date<=r[1],daysIn=r=>Math.max(1,difD(r[0],r[1])+1);
@@ -476,11 +496,13 @@ Object.assign(A,{xl:k=>{const r=rng(),nm=r[0]+"_to_"+r[1],S=C.sales.filter(x=>in
  else if(k==="dash"){const ts=sum(S),te=sum(E),d=daysIn(r),mo={},ca={};S.forEach(x=>{const m=x.date.slice(0,7);(mo[m]=mo[m]||[m,0,0])[1]+=+x.amount||0});E.forEach(x=>{const m=x.date.slice(0,7);(mo[m]=mo[m]||[m,0,0])[2]+=+x.amount||0;ca[x.category]=(ca[x.category]||0)+(+x.amount||0)});
   xls("Business-Report_"+nm,[["Summary",["Item","Value"],[["Period",r[0]+" to "+r[1]],["Total sales",ts],["Total expenses",te],["Net profit",ts-te],["Average sale per day",Math.round(ts/d)],["Average expense per day",Math.round(te/d)],["Average profit per day",Math.round((ts-te)/d)],["Sales entries",S.length]]],["Sales",SALE_H,saleRows(S)],["Expenses",["Date","Category","Note","Paid By","Amount"],E.map(x=>[x.date,x.category,x.note||"",x.mode||"",+x.amount||0])],["By Payment Mode",["Mode","Amount"],grp(S,"mode").map(x=>[x[0],x[1]])],["By Category",["Category","Amount"],Object.entries(ca)],["By Month",["Month","Sales","Expenses","Profit"],Object.values(mo).sort().map(x=>[x[0],x[1],x[2],x[1]-x[2]])]])}}});
 function exportMembers(){const L=listPart(),d=modal(`<h3 style="margin:0 0 4px">Export to Excel</h3><label>Which members?</label><select id="xs"><option value="cur">Current list (${L.n})</option><option value="all">All members (${members.length})</option></select><label>Joining date from 📅 (optional)</label><input type="date" id="xf"><label>Joining date to 📅 (optional)</label><input type="date" id="xt"><label style="display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)"><input type="checkbox" id="xa"> Also include attendance sheet</label><label style="display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)"><input type="checkbox" id="xw"> Also include weight log sheet</label><button id="xg" style="width:100%;margin-top:14px">⬇ Download Excel</button><button class="g" id="xc" style="width:100%;margin-top:8px">Cancel</button>`),Q=id=>d.querySelector("#"+id);
- Q("xc").onclick=()=>d.remove();Q("xg").onclick=()=>{const f=Q("xf").value,t=Q("xt").value,sr=q.toLowerCase();
+ Q("xc").onclick=()=>d.remove();Q("xg").onclick=async()=>{const f=Q("xf").value,t=Q("xt").value,sr=q.toLowerCase();let AT=attm,WT=wtm;Q("xg").textContent="Preparing...";
+  if(Q("xa").checked){try{const tt=t||todayS(),ff=f||iso(new Date(+tt.slice(0,4),+tt.slice(5,7)-60,1)),z=await api({action:"attrange",from:ff,to:tt});if(z.att)AT=z.att}catch(e){}}
+  if(Q("xw").checked){try{const z=await api({action:"wtlist"});if(z.wt)WT=z.wt}catch(e){}}
   let l=Q("xs").value==="cur"?members.filter(m=>(m.name+m.bio+m.phone).toLowerCase().includes(sr)&&(flt==="all"||info(m).st[0]===flt)):members.slice();
   l=l.filter(m=>{const p=pd(m.start);if(!f&&!t)return true;if(!p)return false;const k=iso(p);return(!f||k>=f)&&(!t||k<=t)});const sh=[["Members",MEM_H,memRows(l)]];
-  if(Q("xa").checked){const rows=[];l.forEach(m=>(attm[m.id]||[]).forEach(a=>{const k=a.slice(0,10);if((!f||k>=f)&&(!t||k<=t)){const dt=new Date(k+"T00:00:00");rows.push([m.name,m.bio,dm(k),WD[dt.getDay()],a.slice(11)])}}));sh.push(["Attendance",["Name","BIO ID","Date","Day","Time"],rows])}
-  if(Q("xw").checked){const rows=[];l.forEach(m=>(wtm[m.id]||[]).forEach(w=>{if((!f||w[0]>=f)&&(!t||w[0]<=t)){const dt=new Date(w[0]+"T00:00:00");rows.push([m.name,m.bio,dm(w[0]),WD[dt.getDay()],+w[1]])}}));sh.push(["Weight Log",["Name","BIO ID","Date","Day","Weight (kg)"],rows])}
+  if(Q("xa").checked){const rows=[];l.forEach(m=>(AT[m.id]||[]).forEach(a=>{const k=a.slice(0,10);if((!f||k>=f)&&(!t||k<=t)){const dt=new Date(k+"T00:00:00");rows.push([m.name,m.bio,dm(k),WD[dt.getDay()],a.slice(11)])}}));sh.push(["Attendance",["Name","BIO ID","Date","Day","Time"],rows])}
+  if(Q("xw").checked){const rows=[];l.forEach(m=>(WT[m.id]||[]).forEach(w=>{if((!f||w[0]>=f)&&(!t||w[0]<=t)){const dt=new Date(w[0]+"T00:00:00");rows.push([m.name,m.bio,dm(w[0]),WD[dt.getDay()],+w[1]])}}));sh.push(["Weight Log",["Name","BIO ID","Date","Day","Weight (kg)"],rows])}
   xls("Members_"+(f||"start")+"_to_"+(t||todayS()),sh);d.remove()}}
 
 function qrObj(url){if(!window.qrcode)return null;for(let t=1;t<=40;t++){try{const z=window.qrcode(t,"M");z.addData(url);z.make();return z}catch(e){}}return null}
@@ -492,7 +514,7 @@ function idCard(m){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert("
  d.setFillColor(255,255,255);d.rect(0,0,85.6,54,"F");d.setFillColor(...RED);d.rect(0,0,85.6,13,"F");d.setFillColor(...DK);d.rect(0,13,85.6,1,"F");
  d.setFillColor(255,255,255);d.roundedRect(3,2,27,9,1.8,1.8,"F");if(lg){try{d.addImage(lg.src,"PNG",4.5,2.9,24,Math.min(7.2,24/ar))}catch(e){}}
  F("bold",8);d.setTextColor(255);T("MEMBER ID CARD",82.6,7.9,{align:"right"});
- d.setFillColor(238,240,244);d.roundedRect(5,17.5,22,27.5,2,2,"F");try{if(m.photo)d.addImage(m.photo,"JPEG",5,17.5,22,27.5)}catch(e){}d.setDrawColor(...RED);d.setLineWidth(.6);d.roundedRect(5,17.5,22,27.5,2,2,"S");
+ d.setFillColor(238,240,244);d.roundedRect(5,17.5,22,27.5,2,2,"F");try{const pp=phs(m);if(pp)d.addImage(pp,"JPEG",5,17.5,22,27.5)}catch(e){}d.setDrawColor(...RED);d.setLineWidth(.6);d.roundedRect(5,17.5,22,27.5,2,2,"S");
  F("bold",6);K(RED);T("NAME",32,20.6);F("bold",11);K(DK);if(d.getTextWidth(m.name)>50)F("bold",8.5);T(m.name,32,26);
  F("bold",6);K(RED);T("BIO ID",32,31.2);F("bold",15);K(RED);T(String(m.bio),32,38);
  F("bold",6);K(RED);T("PHONE",32,42.2);F("bold",10.5);K(DK);T(String(m.phone),32,47);
