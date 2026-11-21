@@ -119,9 +119,14 @@ function ldEnd(){LD.n=Math.max(0,LD.n-1);if(LD.n)return;const rem=Math.max(0,LD.
   LD.rm=setTimeout(()=>{e.classList.add("out");setTimeout(()=>{if(!LD.n){e.remove();clearInterval(LD.iv);LD.el=null}},360)},420)},rem)}
 function withLoad(t,fn){ldStart(t,900);return new Promise(res=>setTimeout(()=>{let v;try{v=fn()}catch(e){console.error(e)}ldEnd();res(v)},140))}
 const RETRY=/^(list|photos|member|proofget|memdata|wtlist|attrange|crmlist|invmeta|set|crmput|proofput|allocid|paydue|weight|photodel|del|crmdel)$/,RIDS=/^(allocid|paydue)$/,nap=ms=>new Promise(r=>setTimeout(r,ms));
-const post=async(body,ms)=>{const a=body&&body.action,t=LDM[a];if(RIDS.test(a)&&!body.rid)body={...body,rid:Date.now().toString(36)+Math.random().toString(36).slice(2,9)};
+const IDLE_MS=7*864e5,devId=()=>{let v=ls.g("rcg_dev");if(!v||v.length<12){v="d"+Date.now().toString(36)+Math.random().toString(36).slice(2,12)+Math.random().toString(36).slice(2,8);ls.s("rcg_dev",v)}return v};
+let LOGMSG="";
+function authClear(){["rcg_member","rcg_mbio","rcg_mcache","rcg_role","rcg_cred","rcg_view"].forEach(k=>ls.s(k,""));creds=null;role=null;mphone=null;mbio="";mmem=[];lastSig=""}
+function forceLogout(msg){authClear();LOGMSG=msg||"";try{document.querySelectorAll(".modal,#crm").forEach(e=>e.remove())}catch(e){}render()}
+const touch=()=>{ls.s("rcg_act",String(Date.now()))};
+const post=async(body,ms)=>{if(!body.user&&body.phone&&!body.dv)body={...body,dv:devId()};const a=body&&body.action,t=LDM[a];if(RIDS.test(a)&&!body.rid)body={...body,rid:Date.now().toString(36)+Math.random().toString(36).slice(2,9)};
  if(t)ldStart(t,/^(set|paydue|crmput|photoset|mphoto|allocid)$/.test(a)?1000:550);
- try{const n=RETRY.test(a)?3:1;let last;for(let i=0;i<n;i++){try{const v=await post0(body,ms);if(/^(set|paydue|crmput|crmdel|del|weight|photoset|mphoto|attend|checkout|fcheck)$/.test(a)&&!(v&&v.error))window.__ok=Date.now();return v}catch(e){last=e;if(i<n-1)await nap(600*(i+1))}}throw last}finally{if(t)ldEnd()}};
+ try{const n=RETRY.test(a)?3:1;let last;for(let i=0;i<n;i++){try{const v=await post0(body,ms);if(v&&v.error==="loggedout"&&!body.user){forceLogout(v.why==="idle"?"You were signed out after 7 days of inactivity. Please sign in again.":v.why==="other"?"You were signed out because your account was signed in on another device. Please sign in again.":"You were signed out because too many devices were signed in. Please sign in again.");const e=new Error("loggedout");e.loggedout=1;throw e}if(/^(set|paydue|crmput|crmdel|del|weight|photoset|mphoto|attend|checkout|fcheck)$/.test(a)&&!(v&&v.error))window.__ok=Date.now();return v}catch(e){last=e;if(e&&e.loggedout)throw e;if(i<n-1)await nap(600*(i+1))}}throw last}finally{if(t)ldEnd()}};
 let _errT=0;const oops=()=>{if(Date.now()-_errT>4000){_errT=Date.now();try{toast("Something went wrong. Please try again.")}catch(e){}}};window.addEventListener("unhandledrejection",e=>{console.error(e.reason);oops()});window.addEventListener("error",e=>{console.error(e.error||e.message);oops()});
 async function api(body){return post({...creds,...body})}
 function apply(d){members=Object.values(d||{});MB={};members.forEach(m=>MB[m.id]=m);ls.s("rcg_cache",JSON.stringify(members))}
@@ -235,7 +240,7 @@ async function initStore(){try{members=JSON.parse(ls.g("rcg_cache")||"[]")}catch
  store={set:async m=>{const r=await api({action:"set",member:m});if(r.error)throw 0;await refresh();if(m.photo&&m.photo.indexOf("data:")===0){PH[m.id]=m.photo;PHV[m.id]=(MB[m.id]||{}).pv||0;paintPh(m.id);idbPut({[m.id]:{pv:PHV[m.id],d:m.photo}})}},del:async id=>{const r=await api({action:"del",id});if(r.error)throw 0;await refresh()}};
  setInterval(()=>{if(!document.hidden&&!document.querySelector(".modal"))refresh()},45000);document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!document.querySelector(".modal"))refresh()})}
 /* member area */
-const mfetch=async(p,b)=>{const r=await post({action:"member",phone:p,bio:b});(r.members||[]).forEach(m=>{m.att=cleanA(m.id,m.att);m.out={...outm[m.id]}});return r};
+const mfetch=async(p,b,login)=>{const r=await post({action:"member",phone:p,bio:b,...(login?{login:1}:{})});(r.members||[]).forEach(m=>{m.att=cleanA(m.id,m.att);m.out={...outm[m.id]}});return r};
 
 /* ===== member tools: attendance calendar, weight log, downloads ===== */
 const CALS={};
@@ -362,7 +367,7 @@ function loginView(msg){if(!$("#sitecss"))document.head.insertAdjacentHTML("befo
  const go=async()=>{if(!API){const a=$("#api").value.trim();if(!/^https:\/\/script\.google\.com\//.test(a))return loginView("Enter the sync URL");API=a;ls.s("rcg_api",a)}
  const uid=$("#u").value.trim(),pw=$("#p").value.trim(),dg=uid.replace(/\D/g,"");$("#go").textContent="Signing in…";
  if(dg.length>=10&&!/[a-z]/i.test(uid)){const ph=dg.slice(-10),bio=pw.replace(/\D/g,"");
-  try{const r=await mfetch(ph,bio),mine=(r.members||[]).filter(x=>String(x.id)==="m"+bio);if(!mine.length)return loginView("Incorrect phone number or BIO ID");mphone=ph;mbio=bio;mmem=mine;lastSig="";ls.s("rcg_member",ph);ls.s("rcg_mbio",bio);ls.s("rcg_mcache",JSON.stringify(mine));render()}catch(e){loginView("Cannot reach server. Check your internet.")}return}
+  try{const r=await mfetch(ph,bio,1),mine=(r.members||[]).filter(x=>String(x.id)==="m"+bio);if(!mine.length)return loginView("Incorrect phone number or BIO ID");mphone=ph;mbio=bio;mmem=mine;lastSig="";ls.s("rcg_member",ph);ls.s("rcg_mbio",bio);ls.s("rcg_mcache",JSON.stringify(mine));render()}catch(e){loginView("Cannot reach server. Check your internet.")}return}
  creds={user:uid.toLowerCase(),pw:$("#p").value};
  try{const r=await api({action:"list"});if(r.error){creds=null;return loginView("Incorrect ID or password")}role=r.role;lastNow=0;attm={};wtm={};applyList(r);ls.s("rcg_cred",JSON.stringify(creds));ls.s("rcg_role",role);render();if(role==="owner")setTimeout(refresh,700)}catch(e){creds=null;loginView("Cannot reach server. Check internet or sync URL")}};
 
@@ -399,7 +404,8 @@ function payDueView(m){if(!m)return;const di=dueInfo(m);if(!di)return toast("No 
   catch(e){q("sv").disabled=false;q("fe").textContent=e.message==="toomuch"?"That is more than the pending amount":"Could not save. Check your internet and try again."}}}
 /* main */
 function render(){
- if(!role)return mphone?memberView():loginView();
+ if(!role&&!mphone){const m=LOGMSG;LOGMSG="";return loginView(m)}
+ if(!role)return memberView();
  const L=listPart();
  const all=members.map(info),c=f=>all.filter(f).length;
  const hasFocus=document.activeElement&&document.activeElement.id==="q";
@@ -766,10 +772,15 @@ async function memSheets(r,full){const key=r.join("|");if(MS.ready!==key){let w=
  const sh=[["Members",Hm,mrows],["Attendance",["Name","BIO ID","Date","Day","Check-in","Check-out","Duration"],ar],["Payments",["Name","BIO ID","Date","Time","Type","Amount","Mode","UPI Ref","Received By"],pa],["Weight Log",["Name","BIO ID","Date","Day","Weight (kg)"],wr]];
  if(ms.length&&ms.length<=14)sh.push(["Monthly Attendance",["Name","BIO ID",...ms.map(k=>k.slice(5)+"/"+k.slice(2,4)),"Total"],mon]);return sh}
 const TABS=[["dash","📈 Dashboard"],["sales","💰 Sales"],["exp","🧾 Expenses"],["mem","👥 Members"],["expi","⏳ Expiries"],["pkg","📦 Packages"],["invs","📄 Invoices"]];
+const VK="rcg_view";let _sv=0;
+function saveView(){try{const o=$("#crm");ls.s(VK,JSON.stringify({crm:!!o,ctab,R,EX,EXC,ms:{scope:MS.scope,sort:MS.sort},q,sy:Math.round(window.scrollY||0),cy:o?Math.round(o.scrollTop):0,role}))}catch(e){}}
+const saveViewSoon=()=>{clearTimeout(_sv);_sv=setTimeout(saveView,250)};
+window.addEventListener("scroll",saveViewSoon,{passive:true});window.addEventListener("pagehide",saveView);document.addEventListener("visibilitychange",()=>{if(document.hidden)saveView()});
+document.addEventListener("scroll",e=>{if(e.target&&e.target.id==="crm")saveViewSoon()},true);
 function crmView(){const o=$("#crm"),V={dash,mem,sales,exp,expi,pkg,invs},lg=document.querySelector("header img");if(!V[ctab])ctab="dash";
  if(!$("#crmcss"))document.head.insertAdjacentHTML("beforeend",`<style id="crmcss">.chead{position:sticky;top:0;z-index:5;background:var(--card)}.ctop{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:3px solid var(--red)}.ctabs{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--bd)}.ctabs button{white-space:nowrap;padding:9px 16px;border-radius:99px;font-size:14px}.cbody{max-width:1100px;margin:0 auto;padding:14px}.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:6px 0}.kc{border-radius:16px;padding:14px;color:#fff;display:flex;flex-direction:column;gap:2px;box-shadow:0 4px 14px #0002}.kc small{opacity:.9;font-size:12px}.kc b{font-size:22px}.kc em{font-size:11px;opacity:.85;font-style:normal}.chip{display:inline-block;background:var(--card);border:1px solid var(--bd);border-radius:99px;padding:5px 12px;font-size:12px}.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.pcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}.pcd{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;box-shadow:0 2px 8px #0001}</style>`);
  o.innerHTML=`<div class="chead"><div class="ctop">${lg?`<img src="${lg.src}" style="height:32px;background:#fff;border-radius:6px">`:""}<b style="font-size:18px">Business CRM</b><button class="g" id="cx" style="margin-left:auto;padding:6px 14px">Close</button></div><div class="ctabs">${TABS.map(([k,l])=>`<button class="${ctab===k?"":"g"}" data-t="${k}">${l}</button>`).join("")}</div></div><div class="cbody">${V[ctab]()}</div>`;
- o.querySelector("#cx").onclick=()=>o.remove();o.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{ctab=b.dataset.t;crmView();o.scrollTop=0});
+ o.querySelector("#cx").onclick=()=>{o.remove();saveView()};saveView();o.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{ctab=b.dataset.t;crmView();o.scrollTop=0});
  o.querySelectorAll("[data-rs]").forEach(b=>b.onchange=()=>{const c=rng();R.k=b.value;if(R.k==="custom"){R.from=c[0];R.to=c[1]}crmView()});o.querySelectorAll("[data-rm]").forEach(i=>i.onchange=()=>{if(i.value){R.m=i.value;crmView()}});o.querySelectorAll("[data-ry]").forEach(i=>i.onchange=()=>{R.y=i.value;crmView()});o.querySelectorAll("[data-exs]").forEach(i=>i.onchange=()=>{EX=i.value;crmView()});o.querySelectorAll("[data-exm]").forEach(i=>i.onchange=()=>{if(i.value){EXC.m=i.value;crmView()}});o.querySelectorAll("[data-exy]").forEach(i=>i.onchange=()=>{EXC.y=i.value;crmView()});o.querySelectorAll("[data-ms]").forEach(i=>i.onchange=()=>{MS.scope=i.value;crmView()});o.querySelectorAll("[data-mo]").forEach(i=>i.onchange=()=>{MS.sort=i.value;crmView()});o.querySelectorAll("[data-xp]").forEach(b=>b.onclick=()=>A.pdf(b.dataset.xp));
  o.querySelectorAll("[data-rd]").forEach(i=>i.onchange=()=>{R[i.dataset.rd]=i.value;crmView()});o.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{EX=b.dataset.ex;crmView()});
  o.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>A[b.dataset.a](b.dataset.id));o.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>A.xl(b.dataset.x));o.querySelectorAll("[data-exd]").forEach(i=>i.onchange=()=>{EXC[i.dataset.exd]=i.value;crmView()});
@@ -879,6 +890,11 @@ function tinyPhoto(file){return new Promise((res,rej)=>{const im=new Image();im.
  x.imageSmoothingQuality="high";let q=.74,u=cv.toDataURL("image/jpeg",q);while(u.length>16000&&q>.3){q-=.07;u=cv.toDataURL("image/jpeg",q)}res(u)};im.onerror=rej;im.src=URL.createObjectURL(file)})}
 function addView(){return saleInvoice({enroll:true})}
 
-(async()=>{await initStore();try{creds=JSON.parse(ls.g("rcg_cred")||"null")}catch(e){}role=creds&&API?ls.g("rcg_role"):null;loading=!!role&&!members.length;if(!role){mphone=ls.g("rcg_member")||null;mbio=ls.g("rcg_mbio")||"";if(!mbio)mphone=null;try{mmem=JSON.parse(ls.g("rcg_mcache")||"[]")}catch(e){}}render();refresh()})();
+(()=>{const now=Date.now(),la=+ls.g("rcg_act")||0;if(la&&now-la>IDLE_MS&&(ls.g("rcg_cred")||ls.g("rcg_member"))){authClear();LOGMSG="You were signed out after 7 days of inactivity. Please sign in again."}touch();
+ let _t=0;const act=()=>{const n=Date.now();if(n-_t>30000){_t=n;touch()}};["pointerdown","keydown","touchstart","wheel"].forEach(ev=>window.addEventListener(ev,act,{passive:true,capture:true}));
+ const chk=()=>{const l=+ls.g("rcg_act")||Date.now();if(Date.now()-l>IDLE_MS&&(creds||mphone))forceLogout("You were signed out after 7 days of inactivity. Please sign in again.")};setInterval(chk,10*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)chk()})})();
+(async()=>{await initStore();try{creds=JSON.parse(ls.g("rcg_cred")||"null")}catch(e){}role=creds&&API?ls.g("rcg_role"):null;loading=!!role&&!members.length;if(!role){mphone=ls.g("rcg_member")||null;mbio=ls.g("rcg_mbio")||"";if(!mbio)mphone=null;try{mmem=JSON.parse(ls.g("rcg_mcache")||"[]")}catch(e){}}let VS=null;try{VS=JSON.parse(ls.g(VK)||"null")}catch(e){}if(VS&&VS.role!==role)VS=null;if(VS){try{if(VS.ctab)ctab=VS.ctab;if(VS.R&&VS.R.k)R=Object.assign({k:"month",from:"",to:""},VS.R);if(VS.EX)EX=VS.EX;if(VS.EXC)EXC=Object.assign({from:"",to:""},VS.EXC);if(VS.ms){MS.scope=VS.ms.scope||"all";MS.sort=VS.ms.sort||"visits"}if(role&&typeof VS.q==="string"&&VS.q)q=VS.q}catch(e){}}
+ render();refresh();
+ if(VS&&role==="owner"&&VS.crm){openCrm().then(()=>{const o=$("#crm");if(o&&VS.cy)setTimeout(()=>{o.scrollTop=VS.cy},120)})}else if(VS&&VS.sy)setTimeout(()=>window.scrollTo(0,VS.sy),250)})();
 
 </script></body></html>
