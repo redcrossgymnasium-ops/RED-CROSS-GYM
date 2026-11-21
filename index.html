@@ -920,6 +920,26 @@ function addView(){return saleInvoice({enroll:true})}
 (()=>{const now=Date.now(),la=+ls.g("rcg_act")||0;if(la&&now-la>IDLE_MS&&(ls.g("rcg_cred")||ls.g("rcg_member"))){authClear();LOGMSG="You were signed out after 7 days of inactivity. Please sign in again."}touch();
  let _t=0;const act=()=>{const n=Date.now();if(n-_t>30000){_t=n;touch()}};["pointerdown","keydown","touchstart","wheel"].forEach(ev=>window.addEventListener(ev,act,{passive:true,capture:true}));
  const chk=()=>{const l=+ls.g("rcg_act")||Date.now();if(Date.now()-l>IDLE_MS&&(creds||mphone))forceLogout("You were signed out after 7 days of inactivity. Please sign in again.")};setInterval(chk,10*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)chk()})})();
+/* install prompt: Android one-tap, iPhone steps; hidden when installed, for owners/staff, and for 7 days after "Not now" */
+(function(){const K="rcg_ip",DAY=864e5;let ev=null,shown=false;
+const std=()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}};
+const ios=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const off=()=>{const v=+ls.g(K)||0;return v===-1||(v>0&&Date.now()-v<7*DAY)};
+function hide(){const b=document.getElementById("ipbar");if(b)b.remove()}
+function ready(){if(typeof role!=="undefined"&&role)return false;if(typeof mphone!=="undefined"&&mphone&&typeof mbio!=="undefined"&&mbio&&!ls.g("rcg_tour_"+mbio))return false;return true}
+function show(){if(shown||std()||off()||!ready()||document.getElementById("ipbar"))return;const I=ios();if(!ev&&!I)return;shown=true;
+const b=document.createElement("div");b.id="ipbar";b.setAttribute("role","dialog");b.setAttribute("aria-label","Install app");
+b.style.cssText="position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:55;max-width:460px;margin:0 auto;background:#fff;border:1px solid #e4e7ec;border-radius:18px;box-shadow:0 14px 44px rgba(16,24,40,.25);padding:10px 12px;display:flex;gap:10px;align-items:center;font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#101828";
+const logo=document.querySelector(".st-clogo,.st-logo,header img");const src=logo&&logo.src?logo.src:"icon-192.png";
+b.innerHTML='<img src="icon-192.png" onerror="this.src=\''+src.replace(/'/g,"")+'\'" alt="" style="width:40px;height:40px;border-radius:10px;flex:none;object-fit:contain"><div style="flex:1;min-width:0"><b style="display:block">Install Red Cross Gym</b><span style="color:#667085;font-size:12.5px">'+(ev?"Quick check-in from your home screen.":'Tap <b>Share</b> <span aria-hidden="true">&#x2B06;&#xFE0E;</span> then <b>Add to Home Screen</b>.')+'</span></div>'+(ev?'<button type="button" id="ipgo" style="background:#d71920;color:#fff;border:0;border-radius:12px;padding:9px 14px;font-weight:700;cursor:pointer;flex:none;box-shadow:none;min-height:0;width:auto;margin:0">Install</button>':'')+'<button type="button" id="ipno" aria-label="Not now" style="background:none;border:0;color:#667085;font-size:12.5px;padding:6px;cursor:pointer;flex:none;box-shadow:none;min-height:0;width:auto;margin:0">Not now</button>';
+document.body.appendChild(b);
+b.querySelector("#ipno").onclick=()=>{ls.s(K,String(Date.now()));hide()};
+const g=b.querySelector("#ipgo");if(g)g.onclick=async()=>{const e=ev;ev=null;hide();try{e.prompt();const c=await e.userChoice;if(!c||c.outcome!=="accepted")ls.s(K,String(Date.now()))}catch(x){}}}
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();ev=e;setTimeout(show,2500)});
+window.addEventListener("appinstalled",()=>{ls.s(K,"-1");hide()});
+window.addEventListener("load",()=>setTimeout(show,4000));
+setInterval(()=>{if(!shown)show();else if(typeof role!=="undefined"&&role)hide()},5000);
+})();
 try{if("serviceWorker"in navigator&&/^https?:/.test(location.protocol))window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}catch(e){}
 (async()=>{await initStore();try{creds=JSON.parse(ls.g("rcg_cred")||"null")}catch(e){}role=creds&&API?ls.g("rcg_role"):null;loading=!!role&&!members.length;if(!role){mphone=ls.g("rcg_member")||null;mbio=ls.g("rcg_mbio")||"";if(!mbio)mphone=null;try{mmem=JSON.parse(ls.g("rcg_mcache")||"[]")}catch(e){}}let VS=null;try{VS=JSON.parse(ls.g(VK)||"null")}catch(e){}if(VS&&VS.role!==role)VS=null;if(VS){try{if(VS.ctab)ctab=VS.ctab;if(VS.R&&VS.R.k)R=Object.assign({k:"month",from:"",to:""},VS.R);if(VS.EX)EX=VS.EX;if(VS.EXC)EXC=Object.assign({from:"",to:""},VS.EXC);if(VS.ms){MS.scope=VS.ms.scope||"all";MS.sort=VS.ms.sort||"visits"}if(role&&typeof VS.q==="string"&&VS.q)q=VS.q}catch(e){}}
  render();refresh();
