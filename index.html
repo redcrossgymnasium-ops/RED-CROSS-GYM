@@ -161,6 +161,20 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:0;border
 @media(max-height:480px) and (orientation:landscape){#nvb{bottom:6px}#nvb button{padding:4px 12px}header{padding-top:calc(4px + env(safe-area-inset-top,0px));padding-bottom:4px}}
 @media print{#nvb,.wz,header{display:none!important}}
 </style>
+<style id="orient">
+header{flex-wrap:wrap;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header .otabs{order:9}
+html,body{max-width:100%;overflow-x:hidden}
+.w{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.modal{max-height:92vh;max-height:92dvh;overflow-y:auto}
+@media(orientation:landscape) and (max-height:520px){
+ .w{padding-bottom:64px}
+ .modal{max-height:96dvh}
+ #nvb{transform:scale(.88);transform-origin:bottom center}
+ .wz-bar button{min-height:44px;padding:6px 10px}
+ body:has(#wz) #hqb{bottom:auto;top:10px;right:118px;width:34px;height:34px;font-size:16px;z-index:60}
+}
+</style>
 </head><body>
 <div id="app"></div>
 <script>
