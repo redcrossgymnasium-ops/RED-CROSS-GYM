@@ -868,7 +868,7 @@ function receipt0(r){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert
    if(D!==stub)idDraw(offD(D,x,y2),(()=>{const pm=r.ms&&r.type==="PT Add-on"?r.ms:r;return{name:r.name,bio:r.bio,phone:r.phone,photo:r.photo,plan:pm.plan,start:pm.start,end:pm.end}})(),i?"back":"front",lg,ar)});y2+=57.2+2;
   h.F("normal",6.6);h.K(GR);h.T("FRONT",X0+42.8,y2+1.6,{align:"center"});h.T("BACK",X0+85.6+8.8+42.8,y2+1.6,{align:"center"});return y2+3-yy};
  let tailLater=false,headDone=false;{const th=tail(stub,0);if(y+th<=Y1){tail(d,y);y+=th+GAP}else tailLater=true}
- let left=TA;if(!tailLater&&Y1-y>=30){const hh=tHead(d,y,false);headDone=true;const used=fitT(TA,y+hh,Y1,d);left=TA.slice(used);y=left.length?Y1:tEnd+1}else y=Y1
+ let left=TA;if(false){const hh=tHead(d,y,false);headDone=true;const used=fitT(TA,y+hh,Y1,d);left=TA.slice(used);y=left.length?Y1:tEnd+1}else y=Y1
 
  /* ---------- flow blocks for the remaining pages ---------- */
  const B=[];const add=(id,fn,o)=>B.push({id,fn,h:fn(stub,0),...o});
@@ -944,9 +944,10 @@ function receipt0(r){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return alert
   B.forEach((b,i)=>b.o=i);{const ib=B.find(b=>b.id==="id");if(ib)ib.o=-1}
   const pages=[{cap:left.length?0:Y1-y,items:[],y0:y,p1:true}];
   const nd=q=>(q.items.length||q.p1)?GAP:0,fits=(q,b)=>b.h+nd(q)<=q.cap+.001,put=(q,b)=>{q.cap-=b.h+nd(q);q.items.push(b)},mk=()=>{const q={cap:Y1-Y0,items:[],y0:Y0};pages.push(q);return q};
-  const pin=["id","terms2","hero"].map(k=>B.find(b=>b.id===k)).filter(Boolean),cal=B.filter(b=>/^cal/.test(b.id)),rest=B.filter(b=>!pin.includes(b)&&!cal.includes(b)).sort((a,b)=>b.h-a.h);
+  const pin=["id","hero"].map(k=>B.find(b=>b.id===k)).filter(Boolean),cal=B.filter(b=>/^cal/.test(b.id)),rest=B.filter(b=>!pin.includes(b)&&!cal.includes(b)&&b.id!=="terms2").sort((a,b)=>b.h-a.h);
   pin.forEach(b=>{let q=pages.find(q=>fits(q,b));if(!q)q=mk();put(q,b)});
   rest.forEach(b=>{let best=null;pages.forEach(q=>{if(fits(q,b)&&(!best||q.cap<best.cap))best=q});if(!best)best=mk();put(best,b)});
+  {const tb=B.find(b=>b.id==="terms2"),wb=B.find(b=>b.id==="webapp");if(tb){const pw=Math.max(0,pages.findIndex(q=>q.items.includes(wb)));let q=null;for(let i=pw;i<pages.length;i++)if(fits(pages[i],tb)){q=pages[i];break}if(!q)q=mk();put(q,tb);tb.o=(wb?wb.o:tb.o)+.5}}
   let ci=0;cal.forEach(b=>{let q=null;for(let i=ci;i<pages.length;i++)if(fits(pages[i],b)){q=pages[i];ci=i;break}if(!q){q=mk();ci=pages.length-1}put(q,b)});
   pages.forEach(q=>q.items.sort((a,b)=>a.o-b.o));
  /* draw pages 2+: running header, blocks with evenly stretched gaps, notes fill the last page */
