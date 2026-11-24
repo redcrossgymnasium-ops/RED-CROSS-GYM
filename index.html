@@ -1211,13 +1211,13 @@ function receipt0(r,defer){const J=window.jspdf&&window.jspdf.jsPDF;if(!J)return
     ms.forEach((m,k)=>month(D,m,X0+k*61,y2));return y2-yy+MH},{dep:prev});prev=id}}
  if(tailLater)add("id",tail,{});
  /* ---------- assign blocks to pages (first fit, keeps order of dependent blocks) ---------- */
-  B.forEach((b,i)=>b.o=i);{const ib=B.find(b=>b.id==="id");if(ib)ib.o=-1;const vb=B.find(b=>b.id==="value");if(vb)vb.o=-.5}
+  B.forEach((b,i)=>b.o=i);{const ib=B.find(b=>b.id==="id");if(ib)ib.o=-1;const vb=B.find(b=>b.id==="value");if(vb)vb.o=-.5;const wb2=B.find(b=>b.id==="webapp");if(wb2)wb2.o=-.4}
   const pages=[{cap:left.length?0:Y1-y,items:[],y0:y,p1:true}];
   const nd=q=>(q.items.length||q.p1)?GAP:0,fits=(q,b)=>b.h+nd(q)<=q.cap+.001,put=(q,b)=>{q.cap-=b.h+nd(q);q.items.push(b)},mk=()=>{const q={cap:Y1-Y0,items:[],y0:Y0};pages.push(q);return q};
-  const pin=["id","value","hero"].map(k=>B.find(b=>b.id===k)).filter(Boolean),cal=B.filter(b=>/^cal/.test(b.id)),rest=B.filter(b=>!pin.includes(b)&&!cal.includes(b)&&b.id!=="terms2").sort((a,b)=>b.h-a.h);
+  const pin=["id","value","webapp","hero"].map(k=>B.find(b=>b.id===k)).filter(Boolean),cal=B.filter(b=>/^cal/.test(b.id)),rest=B.filter(b=>!pin.includes(b)&&!cal.includes(b)&&b.id!=="terms2").sort((a,b)=>b.h-a.h);
   pin.forEach(b=>{let q=pages.find(q=>fits(q,b));if(!q)q=mk();put(q,b)});
   rest.forEach(b=>{let best=null;pages.forEach(q=>{if(fits(q,b)&&(!best||q.cap<best.cap))best=q});if(!best)best=mk();put(best,b)});
-  {const tb=B.find(b=>b.id==="terms2"),wb=B.find(b=>b.id==="webapp");if(tb){const pw=Math.max(0,pages.findIndex(q=>q.items.includes(wb)));let q=null;for(let i=pw;i<pages.length;i++)if(fits(pages[i],tb)){q=pages[i];break}if(!q)q=mk();put(q,tb);tb.o=(wb?wb.o:tb.o)+.5}}
+  {const tb=B.find(b=>b.id==="terms2"),wb=B.find(b=>b.id==="webapp");if(tb){const pw=Math.max(0,pages.findIndex(q=>q.items.includes(wb)));let q=null;for(let i=pw;i<pages.length;i++)if(fits(pages[i],tb)){q=pages[i];break}if(!q)q=mk();put(q,tb);tb.o=(wb?wb.o:tb.o)+.05}}
   let ci=0;cal.forEach(b=>{let q=null;for(let i=ci;i<pages.length;i++)if(fits(pages[i],b)){q=pages[i];ci=i;break}if(!q){q=mk();ci=pages.length-1}put(q,b)});
   pages.forEach(q=>q.items.sort((a,b)=>a.o-b.o));
  /* draw pages 2+: running header, blocks with evenly stretched gaps, notes fill the last page */
