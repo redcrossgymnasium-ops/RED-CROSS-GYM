@@ -937,6 +937,51 @@ html:has(#app .st){scroll-behavior:smooth}#sp-bar{position:fixed;left:0;top:0;wi
 .st .dl-cta button.g{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px)}
 .st .dl-cta button:hover{transform:translateY(-4px) scale(1.04)}.st .dl-cta button.g:hover{background:rgba(255,255,255,.18);border-color:#ff4a58;box-shadow:0 14px 28px rgba(217,32,46,.35)}.st .dl-cta button.g svg{transition:transform .25s}.st .dl-cta button.g:hover svg{transform:translateX(5px)}
 @media(max-width:560px){.st .dl-cta button{width:100%;max-width:340px;padding:14px 20px;font-size:16px}}
+/* ===== PORTAL THEME: dark glass (owner / staff / member / lock) ===== */
+body.portal,body:has(#app .lkv){--bg:#0b0d12;--card:#15171d;--tx:#f3f4f7;--mut:#a3aab8;--bd:rgba(255,255,255,.14);--red:#e11d2e;--red2:#a30f1c;--sh:0 14px 34px rgba(0,0,0,.4);color-scheme:dark;background:radial-gradient(60% 40% at 6% 0%,rgba(217,32,46,.38),transparent 70%),radial-gradient(45% 35% at 100% 100%,rgba(245,197,66,.10),transparent 70%),#0b0d12 fixed;color:#f3f4f7}
+body.portal header,body:has(#app .lkv) .lk-top{background:rgba(12,14,19,.78)!important;border-bottom:1px solid rgba(255,255,255,.12)!important;box-shadow:0 1px 0 rgba(217,32,46,.7),0 10px 30px rgba(0,0,0,.35)!important;-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4)}
+body.portal header .r{color:#ff7a85;background:rgba(217,32,46,.16);border:1px solid rgba(217,32,46,.4)}
+body.portal button:not(.g),body:has(#app .lkv) button:not(.g){background:linear-gradient(135deg,#e11d2e,#a30f1c);box-shadow:0 8px 20px rgba(217,32,46,.4),inset 0 0 0 1px rgba(255,255,255,.12)}
+body.portal button.g,body:has(#app .lkv) button.g{background:rgba(255,255,255,.08);color:#f3f4f7;border:1px solid rgba(255,255,255,.2);box-shadow:none}
+@media(hover:hover){body.portal button.g:hover{background:rgba(255,255,255,.16);border-color:rgba(255,74,88,.7)}}
+body.portal input,body.portal select,body.portal textarea,body:has(#app .lkv) input,body:has(#app .lkv) select,body:has(#app .lkv) textarea{background:rgba(255,255,255,.07);color:#fff;border-color:rgba(255,255,255,.2)}
+body.portal input::placeholder,body.portal textarea::placeholder{color:#7d8597}body.portal select option{background:#14161c;color:#fff}
+body.portal input:focus,body.portal select:focus,body.portal textarea:focus{border-color:#ff4a58;box-shadow:0 0 0 3px rgba(217,32,46,.28)}
+body.portal .box,body.portal .paybox{background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+body.portal .osc{background:linear-gradient(160deg,rgba(255,255,255,.11),rgba(255,255,255,.035))!important;color:#fff!important;border:1px solid rgba(255,255,255,.16);box-shadow:0 16px 38px rgba(0,0,0,.45);backdrop-filter:blur(10px);transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s}
+@media(hover:hover){body.portal .osc:hover{transform:translateY(-5px);border-color:#ff4a58;box-shadow:0 22px 44px rgba(217,32,46,.3)}}
+body.portal .osc small{color:#b7bdc9}
+body.portal #bg3d{display:none!important}
+body.portal :is(.otabs,.ctabs,.fh-tabs) button{background:rgba(255,255,255,.07)!important;color:#d6dae3!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:none!important;backdrop-filter:blur(8px)}
+body.portal :is(.otabs,.ctabs,.fh-tabs) button.on,body.portal :is(.otabs,.ctabs,.fh-tabs) button[aria-current]{background:linear-gradient(135deg,#e11d2e,#a30f1c)!important;color:#fff!important;border-color:rgba(255,255,255,.25)!important;box-shadow:0 8px 20px rgba(217,32,46,.45)!important}
+body.portal :is(.ms,.stat,.id,.chip){background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.035))!important;color:#f3f4f7!important;border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 12px 28px rgba(0,0,0,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+body.portal .stat.on{border-color:#ff4a58!important;box-shadow:0 0 0 2px rgba(217,32,46,.35),0 12px 28px rgba(217,32,46,.3)}
+body.portal :is(.ms,.stat,.id) :is(small,.msg,span){color:inherit}
+/* generic light surfaces -> glass */
+body.portal [style*="background:#fff"]:not(img):not(.ivp-paper):not([data-paper]),body.portal [style*="background: #fff"]:not(img){background:#171a21!important;color:#f3f4f7!important;border:1px solid rgba(255,255,255,.14)}
+body.portal img[style*="background:#fff"]{background:#fff}
+body.portal table{color:#f3f4f7}body.portal th{background:rgba(255,255,255,.07)!important;color:#c8cdd8!important}body.portal td,body.portal th{border-color:rgba(255,255,255,.1)!important}body.portal tr:hover td{background:rgba(255,255,255,.04)}
+body.portal hr{border-color:rgba(255,255,255,.12)}body.portal .msg{color:#a3aab8}
+body.portal a:not(.btn):not([class]){color:#ff7a85}
+
+/* portal-specific light rules -> dark glass */
+body.portal #crm .ctop span[style*="#fdecec"]{background:rgba(217,32,46,.16)!important;color:#ff7a85!important;border:1px solid rgba(217,32,46,.4)}
+body.portal :is(.chip) b,body.portal .chip b{color:#fff}
+body.portal .chip:has(b[style]) b{color:inherit}
+
+body.portal #crm .r{color:#ff7a85!important;background:rgba(217,32,46,.16)!important;border:1px solid rgba(217,32,46,.4)}
+
+body.portal #app,body.portal #crm{--card:#15171d}
+body.portal #crm .cbody{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03))!important;border:1px solid rgba(255,255,255,.12);box-shadow:0 14px 34px rgba(0,0,0,.4)!important;color:#f3f4f7}
+body.portal #crm .cbody table,body.portal #crm .cbody th,body.portal #crm .cbody td{background:transparent!important;color:#f3f4f7}
+body.portal #crm .cbody th{background:rgba(255,255,255,.07)!important;color:#c8cdd8}
+body.portal #app .w>p.msg,body.portal #app .w>.alertb,body.portal #app .w>.msg{background:rgba(255,255,255,.07);color:#a3aab8;border:1px solid rgba(255,255,255,.1)}
+body.portal :is(.fh-top){background:rgba(12,14,19,.78)!important;border-bottom:2px solid #e11d2e}
+body.portal :is(.fh-c,.kc,.kgrid>*,.cc,.card){background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.035))!important;border:1px solid rgba(255,255,255,.14)!important;color:#f3f4f7!important;box-shadow:0 12px 28px rgba(0,0,0,.35);backdrop-filter:blur(10px)}
+body.portal #crm [style*="var(--card)"],body.portal #app [style*="var(--card)"]{background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.035))!important;color:#f3f4f7}
+body.portal #crm :is(input,select,textarea){background:rgba(255,255,255,.07);color:#fff;border-color:rgba(255,255,255,.2)}
+body.portal #crm :is(label,small,.msg){color:#a3aab8}
+body.portal .stat b[style*="2563eb"],body.portal .stat b{filter:brightness(1.5) saturate(1.2)}
 .st-ivp{background:linear-gradient(180deg,#fdeceb,#fff)}.st-ivp .st-h2{color:#16181f}.st-ivp .st-h2 em{color:#d9202e;font-style:normal}.st-ivp .st-lead{max-width:720px}
 .ivp-tabs{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:24px 0 10px}.ivp-tabs button{flex:1 1 220px;max-width:320px;border-radius:99px;padding:12px 18px;font-weight:800;background:#fff;color:#16181f;border:2px solid #f3c6c9}.ivp-tabs button.on{background:#d9202e;color:#fff;border-color:#d9202e}
 .ivp-note{max-width:640px;margin:0 auto 18px;text-align:center;font-size:15px;line-height:1.5;color:#3d4350}.ivp-samp{text-align:center;font-size:13px;color:#69707c;margin:12px 0 0}
