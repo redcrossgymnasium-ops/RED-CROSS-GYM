@@ -214,7 +214,6 @@ body:has(#app .lkv) .lk-top{background:#fff!important;color:#14171c!important;ma
 body:has(#app .lkv) .lk-top img{background:none!important;padding:0!important}
 body:has(#app .lkv) .lk-top button:not(.on){background:#eef0f4!important;color:#14171c!important;border:1px solid #e1e4eb!important;box-shadow:none!important}
 body:has(#app .lkv) .lk-top button.on{background:#d9202e!important;color:#fff!important}
-body:has(#app .lkv) #thb{display:none!important}
 
 #crm .ctop button,header button{white-space:nowrap}
 #crm .ctop{flex-wrap:wrap;row-gap:6px;min-width:0}#crm .ctop>*{min-width:0}
@@ -234,6 +233,12 @@ body.portal:not(.light) [style*="background:#f5f8ff"]:not(:is(.id,.pay-qr,#rv,.r
 body.portal:not(.light) [style*="background:#fdecec"]:not(:is(.id,.pay-qr,#rv,.rv-c,.rv-card,.rv-no,#selbar,.wz,.ld-c,.fp-c,.fp-st,.drb,.dts,header,.chead,.lk-top) *):not(:is(.id,.pay-qr,#rv,.rv-c,.rv-card,.rv-no,#selbar,.wz,.ld-c,.fp-c,.fp-st,.drb,.dts)){background:rgba(217,32,46,.18)!important;color:#ff9aa2!important}
 body.portal:not(.light) [style*="background:#fff0f1"]:not(:is(.id,.pay-qr,#rv,.rv-c,.rv-card,.rv-no,#selbar,.wz,.ld-c,.fp-c,.fp-st,.drb,.dts,header,.chead,.lk-top) *):not(:is(.id,.pay-qr,#rv,.rv-c,.rv-card,.rv-no,#selbar,.wz,.ld-c,.fp-c,.fp-st,.drb,.dts)){background:rgba(217,32,46,.16)!important;color:#ff9aa2!important}
 body.portal:not(.light) [style*="background-color:#fff"]:not(:is(.id,.pay-qr,#rv,.rv-c,.rv-card,.rv-no,#selbar,.wz,.ld-c,.fp-c,.fp-st,.drb,.dts,header,.chead,.lk-top) *):not(:is(.id,.pay-qr,#rv,.rv-c,.rv-card,.rv-no,#selbar,.wz,.ld-c,.fp-c,.fp-st,.drb,.dts)){background-color:transparent!important;background-image:linear-gradient(rgba(124,58,237,.16),rgba(124,58,237,.08))!important;color:#f3f4f7}
+
+/* theme switch: one fixed spot on every portal screen (bottom-left, mirrors the ? button) */
+#thb{position:fixed!important;left:8px;right:auto;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:58;width:42px;height:42px;border-radius:50%;padding:0;font-size:18px;line-height:1;place-items:center;background:rgba(15,17,23,.82)!important;color:#ffd45a!important;border:1px solid rgba(255,255,255,.2)!important;box-shadow:0 10px 24px rgba(0,0,0,.4)!important}
+body.light #thb{background:#fff!important;color:#14171c!important;border-color:#d9dde5!important;box-shadow:0 8px 20px rgba(16,24,40,.18)!important}
+body.portal #thb{display:grid!important}body:not(.portal) #thb{display:none!important}
+body.wzopen #thb{display:none!important}
 </style><style id="xdev">
 .wz-bar{flex-wrap:wrap}.wz-bar button{min-width:calc(50% - 4px)}.st-links a.of-nav{color:#d9202e;font-weight:900}
 
@@ -756,7 +761,7 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
 (function(){const K="rcg_theme";let t="dark";try{t=localStorage.getItem(K)||"dark"}catch(e){}
 function ap(){document.body.classList.toggle("light",t==="light");const b=document.getElementById("thb");if(b){b.textContent=t==="light"?"\u{1F319}":"\u2600\uFE0F";b.title=t==="light"?"Switch to dark theme":"Switch to light theme";b.setAttribute("aria-label",b.title)}}
 function mk(){let b=document.getElementById("thb");if(!b){b=document.createElement("button");b.id="thb";b.type="button";b.addEventListener("click",e=>{e.stopPropagation();t=t==="light"?"dark":"light";try{localStorage.setItem(K,t)}catch(_){}ap()})}return b}
-let q=0;function place(){q=0;if(!document.body)return;const b=mk(),tg=document.querySelector("#crm .ctop")||document.querySelector("#app>header");
+let q=0;function place(){q=0;if(!document.body)return;const b=mk(),tg=null;
  if(tg){if(b.parentNode!==tg){const ref=[...tg.children].find(c=>c!==b&&(c.tagName==="BUTTON"||(c.querySelector&&c.querySelector("button"))))||null;tg.insertBefore(b,ref)}b.classList.add("inh")}
  else{if(b.parentNode!==document.body)document.body.appendChild(b);b.classList.remove("inh")}ap()}
 function soon(){if(!q)q=requestAnimationFrame(place)}
