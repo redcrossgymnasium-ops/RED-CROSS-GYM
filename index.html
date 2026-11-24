@@ -291,6 +291,18 @@ button,.btn,a.btn,label,summary{overflow-wrap:normal;word-break:normal;hyphens:n
 .fp-cta{position:sticky;bottom:0;z-index:4;display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:#fffffff2;backdrop-filter:blur(8px);border-top:1px solid #e5e7eb}.fp-cta button{flex:1 1 140px;min-width:min(140px,100%)!important;padding:12px}
 @media(prefers-reduced-motion:reduce){.smp-card,.smp-pulse{animation:none;transition:none}}
 </style>
+<style id="navfix">
+.st-nav .st-wrap{gap:12px;flex-wrap:nowrap}
+.st-nav img.st-logo{flex:0 0 auto}
+.st-links{gap:clamp(10px,1.5vw,22px);white-space:nowrap;flex:0 1 auto}
+.st-links a,.st-login{white-space:nowrap;overflow-wrap:normal;word-break:normal}
+.st-login{flex:0 0 auto;padding:9px 16px}
+.st-login.st-join{background:#fff;color:#d9202e;border:2px solid #d9202e;box-shadow:none;padding:7px 16px}
+@media(max-width:1340px){.st-links a[data-go="st-hub"],.st-links a[data-go="st-mgmt"],.st-links a[data-go="st-pay"],.st-links a[data-go="st-rules"],.st-links a[data-go="st-connect"]{display:none}}
+@media(max-width:1100px){.st-links a[data-go="st-time"],.st-links a[data-go="st-portal"]{display:none}}
+@media(max-width:900px){.st-login.st-join{margin-left:auto}.st-login:not(.st-join){margin-left:0}}
+@media(max-width:520px){.st-nav .st-wrap{gap:8px}.st-nav img.st-logo{height:34px;width:auto;max-width:34vw}.st-login{padding:8px 11px;font-size:13px}.st-login.st-join{padding:6px 11px}}@media(max-width:410px){.st-login.st-join{display:none}.st-login:not(.st-join){margin-left:auto}}@media(max-width:360px){.st-nav img.st-logo{max-width:28vw}.st-login{padding:7px 8px;font-size:12px}.st-login.st-join{padding:5px 8px}}
+</style>
 </head><body>
 <div id="app"></div>
 <script>
@@ -666,7 +678,7 @@ function smpInit(){if(!document.getElementById("smp-grid"))return;smpPaint();con
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-join]");if(b){e.preventDefault();goJoin()}});
 
 function siteHtml(msg){const base=PK.filter(p=>p[1]==="Base").sort((a,b)=>a[2]-b[2]);
- return`<div class="st"><div class="st-top"><b>🔥 MEMBERS: LOG IN TODAY.</b> <span>60 seconds a day keeps your streak alive. Check in, smash your daily quests, climb the leaderboard.</span> <a data-go="lg">Log in now →</a></div><nav class="st-nav"><div class="st-wrap"><img src="${LOGO}" alt="Red Cross Gym" class="st-logo"><div class="st-links"><a data-go="st-offers" class="of-nav">🔥 Offers</a><a data-go="st-portal">Member Portal</a><a data-go="st-hub">Fit Hub</a><a data-go="st-mgmt">Smart Gym</a><a data-go="st-plans">Plans</a><a data-go="st-time">Timings</a><a data-go="st-pay">Pay</a><a data-go="st-rules">Rules</a><a data-go="st-connect">Connect</a><a data-go="st-contact">Contact</a></div><button data-join class="st-login" style="background:#fff;color:#d9202e;border:2px solid #d9202e;margin-right:8px">Join Now</button><button data-go="lg" class="st-login">Member Login</button></div></nav>
+ return`<div class="st"><div class="st-top"><b>🔥 MEMBERS: LOG IN TODAY.</b> <span>60 seconds a day keeps your streak alive. Check in, smash your daily quests, climb the leaderboard.</span> <a data-go="lg">Log in now →</a></div><nav class="st-nav"><div class="st-wrap"><img src="${LOGO}" alt="Red Cross Gym" class="st-logo"><div class="st-links"><a data-go="st-offers" class="of-nav">🔥 Offers</a><a data-go="st-portal">Member Portal</a><a data-go="st-hub">Fit Hub</a><a data-go="st-mgmt">Smart Gym</a><a data-go="st-plans">Plans</a><a data-go="st-time">Timings</a><a data-go="st-pay">Pay</a><a data-go="st-rules">Rules</a><a data-go="st-connect">Connect</a><a data-go="st-contact">Contact</a></div><button data-join class="st-login st-join">Join Now</button><button data-go="lg" class="st-login">Member Login</button></div></nav>
 <header class="st-hero"><i class="st-blob" style="width:420px;height:420px;background:#ffb3b8;left:-120px;top:-100px"></i><i class="st-blob" style="width:360px;height:360px;background:#ffd9a8;right:-80px;bottom:-120px;animation-delay:-6s"></i>
 <div class="st-wrap st-grid"><div><span class="st-badge">INDIA'S MOST AFFORDABLE GYM BRAND!</span><h1 class="st-h1">RED CROSS <em>GYM</em></h1><div class="st-rot"><span>BREAK,</span><span>HEAL,</span><span>GROW,</span><span>REPEAT!</span></div>
 <p class="st-sub">Making Gyms &amp; Fitness Accessible, Sustainable &amp; Budget Friendly For Everyone!</p><div id="st-open" class="st-chip"></div>
