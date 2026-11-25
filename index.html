@@ -859,7 +859,7 @@ function fxList(m){const att=m.att||[],s=streakInfo(att),days=[...new Set(att.ma
   if(tout&&mn2>0)add("td"+td,30,0,"✅","WORKOUT DONE",mn2,"MINUTES OF WORK","Another day, another win.","Workout done: "+mn2+" minutes at Red Cross Gym!");
   else if(!tout)add("ci"+td,28,0,"💥","I'M IN",tot,tot===1?"VISIT":"VISITS & COUNTING","Checked in. Let's go!","I'm in at Red Cross Gym. Visit number "+tot+"! Let's go!")}
  return L.sort((a,b)=>b.pri-a.pri)}
-const fxCap=(m,a,nm)=>{const n=nm?fxFirst(m):"";return a.cap+"\n\n\u{1F4AA} Train with me at Red Cross Gym, Tadwadi, Surat."+(n?"\nMention my name ("+n+") for special offers!":"\nAsk about special offers!")+"\n\u{1F4F8} @redcrossgymnasium\n\u{1F310} www.redcrossgyms.com\n\n#RedCrossGym #SuratFitness #Surat #Tadwadi #RanderRoad #GymMotivation #FitnessJourney #GymLife"};
+const fxCap=(m,a,nm)=>a.cap+"\n\n\u{1F4AA} Tracking every stat, PR and achievement at Red Cross Gym.\n\u{1F4F8} @redcrossgymnasium\n\u{1F310} www.redcrossgyms.com\n\n#RedCrossGym #SuratFitness #GymMotivation #FitnessJourney #GymLife #PersonalRecord #ProgressNotPerfection";
 const fxImg=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.crossOrigin="anonymous";i.onload=()=>r(i);i.onerror=()=>r(null);setTimeout(()=>r(null),4000);i.src=src});
 async function fxDraw(m,a,o){const story=o.fmt==="story",W=1080,H=story?1920:1350,S=o.sc||(story?1.5:2),c=document.createElement("canvas");c.width=W*S;c.height=H*S;const x=c.getContext("2d");x.scale(S,S);
  const Y=v=>v*H/1350,F='"Inter","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif',P=[["#140707","#3b120f","#ff8a3d"],["#0d1016","#262e3b","#d6deea"],["#1a1204","#4d3507","#ffc83d"],["#0c0610","#3d0a18","#ff4b5a"]][a.tier]||["#140707","#3b120f","#ff8a3d"];
@@ -880,10 +880,12 @@ async function fxDraw(m,a,o){const story=o.fmt==="story",W=1080,H=story?1920:135
  const big=a.big,bs=(big.length>3?200:big.length>2?240:290)*(story?1.12:1);x.save();x.shadowColor=P[2]+"99";x.shadowBlur=40;ctr(big,Y(790)+(story?30:0),bs,900,"#fff",0);x.restore();
  ctr(a.unit,Y(790)+(story?30:0)+66,50,800,P[2],3);
  const words=a.line.split(" ");let ln=[""],k=0;x.font="500 38px "+F;words.forEach(w=>{const t=(ln[k]+" "+w).trim();if(x.measureText(t).width>W-170&&ln[k]){k++;ln[k]=w}else ln[k]=t});ln.slice(0,2).forEach((t,i)=>ctr(t,Y(790)+(story?30:0)+132+i*50,38,500,"#e6e6ea",0));
- const fh=story?310:250,fy=H-fh,sy=fy-128;a.st.forEach((s2,i)=>{const bw=300,gap=30,X0=(W-(3*bw+2*gap))/2+i*(bw+gap);x.fillStyle="rgba(255,255,255,.08)";rr(X0,sy,bw,98,20);x.fill();x.strokeStyle="rgba(255,255,255,.18)";x.lineWidth=2;x.stroke();x.textAlign="center";x.font="800 44px "+F;x.fillStyle="#fff";x.fillText(String(s2[1]),X0+bw/2,sy+50);x.font="700 20px "+F;x.fillStyle=P[2];try{x.letterSpacing="2px"}catch(e){}x.fillText(s2[0],X0+bw/2,sy+80);try{x.letterSpacing="0px"}catch(e){}});
- g=x.createLinearGradient(0,fy,W,H);g.addColorStop(0,"#e0202f");g.addColorStop(1,"#8f1020");x.fillStyle=g;x.fillRect(0,fy,W,fh);
- const o2=story?30:0;ctr("TRAIN WITH ME AT RED CROSS GYM",fy+66+o2,42,900,"#fff",1);ctr("3rd Floor, Pramukh Chambers, Rander Rd, Tadwadi, Surat",fy+114+o2,28,500,"#ffe3e5",0);ctr("@redcrossgymnasium   ·   redcrossgyms.com",fy+160+o2,31,800,"#fff",0);
- const cta=nm?"Mention “"+nm+"” for special offers":"Join us. Special offers inside.";x.fillStyle="#fff";const tw=x.measureText(cta).width;x.font="800 28px "+F;const w2=x.measureText(cta).width+60;rr(W/2-w2/2,fy+184+o2,w2,50,25);x.fill();ctr(cta,fy+218+o2,28,800,"#c01826",0);
+ const fh=story?270:220,fy=H-fh,sy=fy-128;a.st.forEach((s2,i)=>{const bw=300,gap=30,X0=(W-(3*bw+2*gap))/2+i*(bw+gap);x.fillStyle="rgba(255,255,255,.08)";rr(X0,sy,bw,98,20);x.fill();x.strokeStyle="rgba(255,255,255,.18)";x.lineWidth=2;x.stroke();x.textAlign="center";x.font="800 44px "+F;x.fillStyle="#fff";x.fillText(String(s2[1]),X0+bw/2,sy+50);x.font="700 20px "+F;x.fillStyle=P[2];try{x.letterSpacing="2px"}catch(e){}x.fillText(s2[0],X0+bw/2,sy+80);try{x.letterSpacing="0px"}catch(e){}});
+ g=x.createLinearGradient(0,fy,0,H);g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,.55)");x.fillStyle=g;x.fillRect(0,fy,W,fh);
+ g=x.createLinearGradient(60,0,W-60,0);g.addColorStop(0,P[2]+"00");g.addColorStop(.5,P[2]);g.addColorStop(1,P[2]+"00");x.fillStyle=g;x.fillRect(60,fy+6,W-120,2);
+ const o2=story?24:0;ctr("SHOW OFF YOUR STATS  ·  PRs  ·  ACHIEVEMENTS",fy+62+o2,27,700,"rgba(255,255,255,.88)",6);
+ x.fillStyle="#d9202e";x.fillRect(W/2-34,fy+86+o2,68,4);
+ ctr("RED CROSS GYM",fy+142+o2,46,900,"#fff",14);ctr("@redcrossgymnasium   ·   redcrossgyms.com",fy+188+o2,26,600,P[2],3);
  return c}
 function fxSave(b,name){const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
 async function flexOpen(mid,id){const m=mmem.find(x=>x.id===mid)||mmem[0];if(!m)return;const L=fxList(m);if(!L.length){toast("Check in at the gym to unlock your first flex card");return}fxCss();
