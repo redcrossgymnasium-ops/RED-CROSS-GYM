@@ -1099,6 +1099,127 @@ const FLXS=[
  {n:"Vikas",tier:2,emo:"🌄",kick:"EARLY BIRD",big:"25",unit:"EARLY WORKOUTS",line:"Up before the sun. Done before the day starts.",st:[["VISITS",57],["WEEK STREAK",5],["THIS MONTH",17]]},
  {n:"Nisha",tier:3,emo:"🏗️",kick:"IRON MOVER",big:"25K",unit:"KG LIFTED IN TOTAL",line:"Total weight moved. Not bad.",st:[["WORKOUTS",75],["KG LIFTED","25000"],["FIT LEVEL",11]]},
  {n:"Dev",tier:3,emo:"🥗",kick:"30-DAY HEALTH STREAK",big:"30",unit:"DAYS LOGGED IN A ROW",line:"Water, food, workouts: tracked.",st:[["HEALTH STREAK",30],["FIT LEVEL",8],["XP",4100]]}];
+/* ===== WELCOME VIDEO: 60-second animated guide for new members (pure HTML/CSS/JS, no video file) ===== */
+const WVD=[4,9,8,8,10,8,8,5],WVT=WVD.reduce((a,b)=>a+b,0),WVN=["Welcome","Log in","Set your password","Add to Home screen","Check in","Fit Hub & streaks","Flex your wins","Join the family"];
+const WVCSS=`.wv{position:relative;width:100%;aspect-ratio:9/16;container-type:inline-size;overflow:hidden;border-radius:22px;background:#12060a;box-shadow:0 24px 60px rgba(0,0,0,.35);user-select:none;-webkit-tap-highlight-color:transparent}
+.wv-in{position:absolute;inset:0;font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+.wv-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 80% 0%,#a8142a 0%,#3b0a14 38%,#12060a 75%);}
+.wv-bg:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 2px,transparent 2px 22px)}
+.wv-top{position:absolute;left:5cqw;right:5cqw;top:4.5cqw;display:flex;align-items:center;justify-content:space-between;z-index:5}
+.wv-top img{height:9cqw;background:#fff;border-radius:2cqw;padding:.8cqw 2cqw}
+.wv-step{font-size:3.4cqw;font-weight:800;letter-spacing:.14em;color:#ffc83d;opacity:0;transition:opacity .3s}.wv-step.on{opacity:1}
+.wv-s{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s}.wv-s.on{opacity:1;visibility:visible}
+.wv-h{position:absolute;left:6cqw;right:6cqw;top:17cqw;font-size:8.4cqw;line-height:1.08;font-weight:900;letter-spacing:-.01em}
+.wv-h em{font-style:normal;color:#ff5a6a}
+.wv-p{position:absolute;left:6cqw;right:6cqw;top:38cqw;font-size:4.4cqw;line-height:1.35;color:#f3d6da;font-weight:500}.wv-p b{color:#fff}
+.wv-s.on .wv-h{animation:wvu .6s ease both}.wv-s.on .wv-p{animation:wvu .6s .2s ease both}
+@keyframes wvu{from{opacity:0;transform:translateY(3cqw)}to{opacity:1;transform:none}}
+.wv-ph{position:absolute;left:50%;top:60cqw;margin-left:-26cqw;width:52cqw;height:104cqw;border-radius:7cqw;background:#0b0b0e;padding:1.5cqw;box-shadow:0 5cqw 10cqw rgba(0,0,0,.55),0 0 0 .4cqw #444}
+.wv-s.on .wv-ph{animation:wvp .7s .1s cubic-bezier(.2,1.2,.3,1) both}@keyframes wvp{from{opacity:0;transform:translateY(8cqw) scale(.92)}to{opacity:1;transform:none}}
+.wv-sc{position:relative;height:100%;border-radius:5.6cqw;overflow:hidden;background:#fff;color:#111;font-size:2.9cqw;line-height:1.3}
+.wv-hd{background:#d9202e;color:#fff;font-weight:900;letter-spacing:.12em;font-size:2.6cqw;padding:3.2cqw 3.5cqw 2.6cqw;display:flex;justify-content:space-between}
+.wv-bd{padding:3.2cqw 3.5cqw}
+.wv-t{font-weight:900;font-size:4.2cqw;margin:0 0 1cqw}.wv-m{color:#667085;font-size:2.7cqw;margin:0 0 2.6cqw}
+.wv-l{font-size:2.5cqw;font-weight:700;color:#667085;margin:2cqw 0 .8cqw;display:block}
+.wv-f{border:.35cqw solid #d0d5dd;border-radius:2cqw;padding:2.2cqw 2.4cqw;height:8.4cqw;font-weight:700;display:flex;align-items:center;overflow:hidden;white-space:nowrap}
+.wv-f span{display:inline-block;overflow:hidden;white-space:nowrap;width:0}
+.wv-s.on .wv-f span{animation:wvty var(--d,1.4s) steps(var(--n,12)) var(--w,.8s) forwards}@keyframes wvty{to{width:100%}}
+.wv-btn{margin-top:3.4cqw;background:#d9202e;color:#fff;font-weight:900;border-radius:2.4cqw;text-align:center;padding:2.8cqw;font-size:3.4cqw}
+.wv-g{background:#12a150}.wv-rd{background:#c0262d}
+.wv-fg{position:absolute;font-size:9cqw;z-index:6;filter:drop-shadow(0 1cqw 1cqw rgba(0,0,0,.4));opacity:0}
+.wv-s.on .wv-fg{animation:wvfg 1.4s var(--fd,3s) ease forwards}
+@keyframes wvfg{0%{opacity:0;transform:translate(14cqw,22cqw)}25%{opacity:1}70%{opacity:1;transform:translate(0,0) scale(1)}85%{transform:translate(0,0) scale(.82)}100%{opacity:0;transform:translate(0,0) scale(1)}}
+.wv-ok{position:absolute;inset:0;display:grid;place-items:center;background:rgba(18,161,80,.96);color:#fff;font-weight:900;font-size:5cqw;text-align:center;opacity:0;z-index:4}
+.wv-ok i{display:block;font-style:normal;font-size:16cqw}
+.wv-s.on .wv-ok{animation:wvok .5s var(--od,4.6s) ease forwards}@keyframes wvok{to{opacity:1}}
+.wv-press{animation:none}.wv-s.on .wv-press{animation:wvpr .3s var(--pd,3.7s) ease}@keyframes wvpr{50%{transform:scale(.93);filter:brightness(.85)}}
+.wv-dots{letter-spacing:.35em;font-size:4cqw}
+.wv-bar2{height:1.8cqw;border-radius:9cqw;background:#e4e7ec;overflow:hidden;margin-top:2.4cqw}.wv-bar2 i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f59e0b,#12a150)}
+.wv-s.on .wv-bar2 i{animation:wvbar 2s 1.4s ease forwards}@keyframes wvbar{to{width:100%}}
+.wv-menu{position:absolute;left:0;right:0;top:0;bottom:0;background:#fff;animation:none}
+.wv-s.on .wv-menu{animation:wvfo .5s 4.6s ease forwards}@keyframes wvfo{to{opacity:0;visibility:hidden}}
+.wv-row{padding:2.6cqw 3.4cqw;border-bottom:.3cqw solid #eee;font-weight:600;font-size:3cqw}
+.wv-hl{background:#fff3c4}.wv-s.on .wv-hl{animation:wvhl 1s 2.4s ease forwards}@keyframes wvhl{from{background:#fff}to{background:#ffd966;color:#000;transform:scale(1.03)}}
+.wv-home{position:absolute;inset:0;background:linear-gradient(160deg,#243b6b,#7a2a5f);display:grid;grid-template-columns:repeat(4,1fr);gap:3cqw;padding:7cqw 3.5cqw;align-content:start;color:#fff;font-size:2.2cqw;text-align:center}
+.wv-ic{width:8.4cqw;height:8.4cqw;border-radius:2.2cqw;background:rgba(255,255,255,.25);margin:0 auto 1cqw}
+.wv-app{grid-column:1/3;grid-row:2;display:flex;flex-direction:column;align-items:center;opacity:0}
+.wv-app .wv-ic{background:#fff;display:grid;place-items:center;width:14cqw;height:14cqw;border-radius:3.4cqw;box-shadow:0 0 0 1cqw rgba(255,200,61,.6)}.wv-app .wv-ic img{width:12cqw}
+.wv-s.on .wv-app{animation:wvapp .8s 5.2s cubic-bezier(.2,1.5,.3,1) forwards}@keyframes wvapp{0%{opacity:0;transform:scale(.2)}100%{opacity:1;transform:scale(1)}}
+.wv-pass{background:#d9202e;color:#fff;padding:3cqw;text-align:center;border-radius:0 0 4cqw 4cqw}.wv-pass small{letter-spacing:.14em;font-weight:800;font-size:2.3cqw}
+.wv-clk{font-size:9.4cqw;font-weight:900;margin:1.4cqw 0}
+.wv-nm{font-weight:900;font-size:4cqw;margin-top:3cqw}.wv-chip{display:inline-block;margin:1cqw 0 0;background:#12a150;color:#fff;font-size:2.4cqw;font-weight:800;border-radius:9cqw;padding:.7cqw 2.4cqw}
+.wv-sw{position:relative;height:13cqw}.wv-sw>*{position:absolute;left:0;right:0;top:0}
+.wv-sw .a{animation:none}.wv-s.on .wv-sw .a{animation:wvfo .3s 3.9s forwards}.wv-sw .b{opacity:0}.wv-s.on .wv-sw .b{animation:wvok .3s 3.9s forwards}
+.wv-pill{display:inline-block;margin:.6cqw;background:rgba(255,255,255,.12);border:.3cqw solid rgba(255,255,255,.25);border-radius:9cqw;padding:1.1cqw 3cqw;font-size:3.3cqw;font-weight:700;color:#fff}
+.wv-pills{position:absolute;left:5cqw;right:5cqw;top:166cqw;text-align:center}
+.wv-ring{width:26cqw;height:26cqw;border-radius:50%;margin:1cqw auto 2.4cqw;display:grid;place-items:center;background:conic-gradient(#d9202e 0 0%,#e4e7ec 0)}
+.wv-s.on .wv-ring{animation:wvrg 2.6s .6s ease forwards}@property --p{syntax:"<percentage>";inherits:false;initial-value:0%}
+@keyframes wvrg{to{background:conic-gradient(#d9202e 0 72%,#e4e7ec 0)}}
+.wv-ring b{display:grid;place-items:center;width:19cqw;height:19cqw;border-radius:50%;background:#fff;font-size:4.6cqw;font-weight:900;text-align:center;line-height:1.1}
+.wv-q{margin:1.6cqw 0;font-weight:700;font-size:2.6cqw}.wv-q div{display:flex;justify-content:space-between}
+.wv-q .t{height:1.8cqw;background:#e4e7ec;border-radius:9cqw;overflow:hidden;margin-top:.6cqw}.wv-q .t i{display:block;height:100%;width:0;background:#d9202e;border-radius:9cqw}
+.wv-s.on .wv-q.a i{animation:wvq1 1.4s 1.2s ease forwards}.wv-s.on .wv-q.b i{animation:wvq2 1.4s 1.9s ease forwards}.wv-s.on .wv-q.c i{animation:wvq3 1.4s 2.6s ease forwards}
+@keyframes wvq1{to{width:84%}}@keyframes wvq2{to{width:70%}}@keyframes wvq3{to{width:100%}}
+.wv-fl{position:absolute;bottom:3cqw;left:50%;margin-left:-14cqw;white-space:nowrap;font-size:3cqw;font-weight:900;background:#fff3c4;border-radius:9cqw;padding:1cqw 2.4cqw}.wv-s.on .wv-fl{animation:wvpop .6s 3.8s cubic-bezier(.2,1.6,.3,1) both}
+@keyframes wvpop{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:none}}
+.wv-card{position:absolute;inset:3cqw;border-radius:4cqw;background:linear-gradient(160deg,#16070b,#4a0a16);color:#fff;text-align:center;padding:5cqw 2cqw;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1cqw;opacity:0}
+.wv-s.on .wv-card{animation:wvcd .8s .6s cubic-bezier(.2,1.4,.3,1) forwards}@keyframes wvcd{0%{opacity:0;transform:scale(.4) rotate(-8deg)}100%{opacity:1;transform:none}}
+.wv-card .e{font-size:11cqw}.wv-card .n{font-size:17cqw;font-weight:900;line-height:1;text-shadow:0 0 5cqw rgba(255,90,106,.7)}.wv-card .k{font-weight:900;letter-spacing:.12em;color:#ff8a94;font-size:3cqw}.wv-card .u{font-weight:800;letter-spacing:.08em;font-size:3cqw}
+.wv-card .f{margin-top:3cqw;font-size:2.2cqw;letter-spacing:.2em;font-weight:800;color:#fff;opacity:.85}
+.wv-sh{position:absolute;left:5cqw;right:5cqw;top:166cqw;display:flex;gap:2cqw;justify-content:center}
+.wv-sh span{font-size:3.5cqw;font-weight:800;padding:1.6cqw 3cqw;border-radius:9cqw;background:#fff;color:#111;opacity:0}
+.wv-s.on .wv-sh span{animation:wvpop .5s ease both}.wv-s.on .wv-sh span:nth-child(1){animation-delay:2.4s}.wv-s.on .wv-sh span:nth-child(2){animation-delay:3s}.wv-s.on .wv-sh span:nth-child(3){animation-delay:3.6s}
+.wv-cf{position:absolute;top:-8cqw;font-size:6cqw;opacity:0;z-index:1}.wv-ph{z-index:2}.wv-s.on .wv-cf{animation:wvcf 3s linear infinite}@keyframes wvcf{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:.8;transform:translateY(190cqw) rotate(500deg)}}
+.wv-intro,.wv-outro{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 7cqw}
+.wv-big{font-size:12cqw;font-weight:900;line-height:1.02;margin:5cqw 0 3cqw}.wv-big em{font-style:normal;color:#ff5a6a}
+.wv-lg{width:58cqw;background:#fff;border-radius:4cqw;padding:2.4cqw 4cqw}
+.wv-ic6{display:flex;gap:2.4cqw;margin-top:5cqw;font-size:8cqw}.wv-ic6 span{opacity:0}.wv-s.on .wv-ic6 span{animation:wvpop .5s ease both}
+.wv-s.on .wv-ic6 span:nth-child(1){animation-delay:1s}.wv-s.on .wv-ic6 span:nth-child(2){animation-delay:1.3s}.wv-s.on .wv-ic6 span:nth-child(3){animation-delay:1.6s}.wv-s.on .wv-ic6 span:nth-child(4){animation-delay:1.9s}.wv-s.on .wv-ic6 span:nth-child(5){animation-delay:2.2s}.wv-s.on .wv-ic6 span:nth-child(6){animation-delay:2.5s}
+.wv-cta{margin-top:7cqw;background:#fff;color:#c01826;font-weight:900;font-size:6cqw;border-radius:4cqw;padding:3.6cqw 10cqw;box-shadow:0 0 0 0 rgba(255,255,255,.6);animation:wvpu 1.4s infinite}@keyframes wvpu{70%{box-shadow:0 0 0 4cqw rgba(255,255,255,0)}}
+.wv-url{margin-top:5cqw;font-weight:800;font-size:4.4cqw;color:#ffc83d;letter-spacing:.04em}
+.wv-prog{position:absolute;left:0;right:0;bottom:0;height:1.4cqw;background:rgba(255,255,255,.15);z-index:8}.wv-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9202e,#ffc83d)}
+.wv-pp{position:absolute;inset:0;z-index:9;display:grid;place-items:center;background:rgba(0,0,0,.35);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}
+.wv.pz .wv-pp,.wv.end .wv-pp{opacity:1;pointer-events:auto}.wv-pp b{width:22cqw;height:22cqw;border-radius:50%;background:#d9202e;display:grid;place-items:center;font-size:9cqw;box-shadow:0 0 0 2cqw rgba(255,255,255,.25)}
+.wv.pz *,.wv.pz *:before,.wv.pz *:after{animation-play-state:paused!important}.wv.rec .wv-pp,.wv.rec .wv-prog{display:none}
+@media(prefers-reduced-motion:reduce){.wv *{animation-duration:.01s!important;animation-delay:0s!important}}`;
+function wvHtml(logo){const f=(t,n,w,d)=>`<div class="wv-f"><span style="--n:${n};--w:${w}s;--d:${d||1.2}s">${t}</span></div>`;
+ return`<div class="wv"><div class="wv-in"><div class="wv-bg"></div>
+<div class="wv-top"><img src="${logo}" alt="Red Cross Gym"><span class="wv-step" id="wv-st">STEP 1/6</span></div>
+<div class="wv-s wv-intro"><div class="wv-lg"><img src="${logo}" alt="" style="width:100%;display:block"></div><div class="wv-big">Membership done! <em>🎉</em><br>Now what?</div><div class="wv-p" style="position:static;font-size:5cqw">6 quick steps. <b>60 seconds.</b></div><div class="wv-ic6"><span>🔑</span><span>🔒</span><span>📲</span><span>✅</span><span>💪</span><span>📣</span></div></div>
+<div class="wv-s"><div class="wv-h">1. <em>Log in</em> to your Member Portal</div><div class="wv-p">Open <b>redcrossgyms.com</b> and use your <b>registered phone number</b> and the password the gym gave you.</div>
+<div class="wv-ph"><div class="wv-sc"><div class="wv-hd"><span>RED CROSS GYM</span><span>MEMBER</span></div><div class="wv-bd"><p class="wv-t">Member Login</p><p class="wv-m">Welcome back. Sign in to your portal.</p><span class="wv-l">Phone number</span>${f("Your registered number",20,.8,1.5)}<span class="wv-l">Password</span><div class="wv-f"><span class="wv-dots" style="--n:6;--w:2.4s;--d:.9s">••••••</span></div><div class="wv-btn wv-press" style="--pd:3.6s">Sign in</div><p class="wv-m" style="margin-top:2.4cqw">First time? Use the password our team gave you. The app then asks you to set your own.</p></div></div><span class="wv-fg" style="--fd:3.2s;left:36cqw;top:80cqw">👆</span></div></div>
+<div class="wv-s"><div class="wv-h">2. Set your <em>own password</em></div><div class="wv-p">Pick something only <b>you</b> know. Never share it, not even with staff.</div>
+<div class="wv-ph"><div class="wv-sc"><div class="wv-hd"><span>RED CROSS GYM</span><span>SECURITY</span></div><div class="wv-bd"><p class="wv-t">Create your password</p><p class="wv-m">At least 6 characters. Make it hard to guess.</p><span class="wv-l">New password</span><div class="wv-f"><span class="wv-dots" style="--n:9;--w:.8s;--d:1.2s">•••••••••</span></div><span class="wv-l">Confirm password</span><div class="wv-f"><span class="wv-dots" style="--n:9;--w:1.9s;--d:1.2s">•••••••••</span></div><div class="wv-bar2"><i></i></div><p class="wv-m" style="margin-top:1cqw">Strong password</p><div class="wv-btn wv-press" style="--pd:4.6s">Save password</div></div><div class="wv-ok" style="--od:5.2s"><div><i>✓</i>Password saved</div></div></div><span class="wv-fg" style="--fd:4.2s;left:36cqw;top:116cqw">👆</span></div></div>
+<div class="wv-s"><div class="wv-h">3. Add it to your <em>Home screen</em></div><div class="wv-p">Open the browser menu, tap <b>Add to Home screen</b>. Now it opens like a real app.</div>
+<div class="wv-ph"><div class="wv-sc"><div class="wv-home"><div><div class="wv-ic"></div>Phone</div><div><div class="wv-ic"></div>Camera</div><div><div class="wv-ic"></div>Photos</div><div><div class="wv-ic"></div>Maps</div><div class="wv-app"><div class="wv-ic"><img src="${logo}" alt=""></div><b>Red Cross Gym</b></div></div><div class="wv-menu"><div class="wv-hd" style="background:#333"><span>redcrossgyms.com</span><span>⋮</span></div><div class="wv-row">↗ Share</div><div class="wv-row">⭐ Add to bookmarks</div><div class="wv-row wv-hl">📲 Add to Home screen</div><div class="wv-row">⚙ Settings</div></div></div><span class="wv-fg" style="--fd:2.8s;left:30cqw;top:58cqw">👆</span></div></div>
+<div class="wv-s"><div class="wv-h">4. <em>Check in</em> every visit</div><div class="wv-p">Tap <b>Check in</b> when you arrive and <b>Check out</b> when you leave. One tap. No cards, no queues.</div>
+<div class="wv-ph"><div class="wv-sc"><div class="wv-pass"><small>MEMBER PASS</small><div class="wv-clk">06:30 AM</div><div class="wv-nm">Your Name</div><span class="wv-chip">ACTIVE · 168 days left</span></div><div class="wv-bd"><div class="wv-sw"><div class="a"><div class="wv-btn wv-g wv-press" style="margin:0;--pd:3.7s;padding:3.4cqw">Check in</div></div><div class="b"><div class="wv-btn wv-g" style="margin:0;padding:3.4cqw">✓ Checked in</div></div></div><div class="wv-btn wv-rd" style="opacity:.35">Check out</div><p class="wv-m" style="margin-top:3cqw;text-align:center">Forgot to check out? We close your visit automatically at 10 PM.</p></div></div><span class="wv-fg" style="--fd:2.6s;left:30cqw;top:74cqw">👆</span></div><div class="wv-pills"><span class="wv-pill">⏰ 6 AM – 10 PM</span><span class="wv-pill">📅 Mon – Sat</span></div></div>
+<div class="wv-s"><div class="wv-h">5. Build your <em>streak</em> in Fit Hub</div><div class="wv-p">Log water, food and workouts, play games, earn XP. <b>Visit 3 times a week</b> to grow your streak.</div>
+<div class="wv-ph"><div class="wv-sc"><div class="wv-hd"><span>FIT HUB</span><span>LEVEL 3</span></div><div class="wv-bd"><div class="wv-ring"><b>Lv 3<br><small style="font-size:2.4cqw;color:#667085">120 XP</small></b></div><div class="wv-q a"><div><span>💧 Water</span><span>2.5 L</span></div><div class="t"><i></i></div></div><div class="wv-q b"><div><span>🥩 Protein</span><span>70 g</span></div><div class="t"><i></i></div></div><div class="wv-q c"><div><span>🏋 Workout</span><span>Done ✓</span></div><div class="t"><i></i></div></div></div><div class="wv-fl">🔥 2-week streak</div></div></div></div>
+<div class="wv-s"><div class="wv-cf" style="left:8%;animation-delay:.2s">🎉</div><div class="wv-cf" style="left:30%;animation-delay:1s">⭐</div><div class="wv-cf" style="left:55%;animation-delay:.5s">🔥</div><div class="wv-cf" style="left:78%;animation-delay:1.4s">🏆</div><div class="wv-cf" style="left:90%;animation-delay:.8s">💪</div>
+<div class="wv-h">6. <em>Flex</em> your wins</div><div class="wv-p">Every PR, streak and milestone becomes a <b>shareable card</b>. Post it on Instagram or send it on WhatsApp.</div>
+<div class="wv-ph"><div class="wv-sc" style="background:#12060a"><div class="wv-card"><div class="e">🏆</div><div class="k">CENTURY CLUB</div><div class="n">100</div><div class="u">VISITS</div><div class="f">RED CROSS GYM</div></div></div></div><div class="wv-sh"><span>📸 Instagram</span><span>💬 WhatsApp</span><span>⬇ Save HD</span></div></div>
+<div class="wv-s wv-outro"><div class="wv-lg" style="width:44cqw"><img src="${logo}" alt="" style="width:100%;display:block"></div><div class="wv-big">Welcome to<br>the <em>family!</em></div><div class="wv-p" style="position:static;font-size:5cqw">Log in. Check in. <b>Flex it.</b></div><div class="wv-cta">Log in now ➜</div><div class="wv-url">www.redcrossgyms.com</div><div class="wv-p" style="position:static;font-size:3.6cqw;margin-top:4cqw">Need help? Ask at the front desk.</div></div>
+<div class="wv-prog"><i id="wv-pr"></i></div><div class="wv-pp"><b>▶</b></div></div></div>`}
+function wvInit(root,o){o=o||{};if(!root||root._wv)return null;root._wv=1;const sc=[...root.querySelectorAll(".wv-s")],stp=root.querySelector("#wv-st"),pr=root.querySelector("#wv-pr"),S={t:0,run:0,last:0,i:-1,raf:0};
+ const starts=[];WVD.reduce((a,d)=>{starts.push(a);return a+d},0);
+ const show=i=>{if(S.i===i)return;S.i=i;sc.forEach((e,k)=>e.classList.toggle("on",k===i));if(stp){stp.classList.toggle("on",i>=1&&i<=6);stp.textContent="STEP "+i+"/6"}if(o.onScene)o.onScene(i)};
+ const at=t=>{let i=0;while(i<WVD.length-1&&t>=starts[i]+WVD[i])i++;return i};
+ const loop=()=>{S.raf=0;if(!S.run)return;const n=performance.now();S.t+=(n-S.last)/1000;S.last=n;if(S.t>=WVT){S.t=WVT;S.run=0;root.classList.add("end");root.classList.remove("pz");show(WVD.length-1);if(pr)pr.style.width="100%";return}show(at(S.t));if(pr)pr.style.width=(S.t/WVT*100)+"%";S.raf=requestAnimationFrame(loop)};
+ const api={play(){if(S.run)return;if(S.t>=WVT){S.t=0;S.i=-1}root.classList.remove("pz","end");S.run=1;S.last=performance.now();if(!S.raf)S.raf=requestAnimationFrame(loop)},
+  pause(u){if(!S.run)return;S.run=0;root.classList.add("pz")},
+  seek(i){S.i=-1;sc.forEach(e=>e.classList.remove("on"));void root.offsetWidth;S.t=starts[i]+.01;root.classList.remove("end");show(i);root._u=0;api.play()},
+  toggle(){if(S.run){root._u=1;api.pause()}else{root._u=0;api.play()}},state:S};
+ const pp=root.querySelector(".wv-pp");if(pp&&!o.noTap)pp.onclick=()=>{if(root.classList.contains("end"))api.seek(0);else api.play()};
+ root.addEventListener("click",e=>{if(o.noTap)return;if(e.target.closest(".wv-pp"))return;api.toggle()});
+ if(o.visible&&"IntersectionObserver" in window){new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>=.55){if(!S.run&&!root.classList.contains("end")&&!root._u)api.play()}else if(!e.isIntersecting&&S.run){api.pause()}})},{threshold:[0,.55]}).observe(root)}
+ show(0);if(o.auto)api.play();return api}
+function wvSection(){const L=["Log in with your phone number","Set your own password","Add it to your Home screen","Check in on every visit","Build your streak in Fit Hub","Flex your wins"];
+return`<section id="st-start" class="wv-sec"><div class="st-wrap wv-grid"><div class="wv-txt"><span class="wv-tag rv">🎬 NEW MEMBER? WATCH THIS · 60 SECONDS</span><h2 class="st-h2 rv">Just joined? Here is <em>what to do next.</em></h2><p class="wv-sub rv">Six easy steps, and you are fully set up. No forms, no queues, no confusion.</p><ol class="wv-list rv">${L.map((t,i)=>`<li data-wvi="${i+1}"><b>${i+1}</b><span>${t}</span></li>`).join("")}</ol><div class="st-cta rv"><a class="st-b1" data-go="lg" href="#lg">Log in now</a><a class="st-b2" href="https://wa.me/917016294385" target="_blank" rel="noopener">Need help? WhatsApp</a></div></div><div class="wv-box rv"><div id="wv-mount"></div><div class="wv-cap">Tap the video to pause or play</div></div></div></section>`}
+function wvInitSite(){if(!document.getElementById("wvcss")){const s=document.createElement("style");s.id="wvcss";s.textContent=WVCSS+`.wv-sec{padding:64px 0;background:linear-gradient(180deg,#fff,#fff4f5)}.wv-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}.wv-tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.12em;color:#c01826;background:#ffe6e8;border-radius:99px;padding:7px 14px;margin-bottom:12px}.wv-sub{font-size:17px;color:#475467;margin:8px 0 18px}.wv-list{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:10px}.wv-list li{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #f1d5d8;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;transition:.2s}.wv-list li.on,.wv-list li:hover{border-color:#d9202e;box-shadow:0 6px 18px rgba(217,32,46,.15);transform:translateX(4px)}.wv-list b{flex:none;width:30px;height:30px;border-radius:50%;background:#d9202e;color:#fff;display:grid;place-items:center;font-size:14px}.wv-box{max-width:340px;width:100%;margin:0 auto}.wv-cap{text-align:center;font-size:12px;color:#667085;margin-top:10px}@media(max-width:800px){.wv-grid{grid-template-columns:1fr;gap:26px}.wv-sec{padding:44px 0}.wv-box{order:-1;max-width:300px}}`;document.head.appendChild(s)}
+const m=document.getElementById("wv-mount");if(!m||m._d)return;m._d=1;m.innerHTML=wvHtml(LOGO);const root=m.firstChild,li=[...document.querySelectorAll(".wv-list li")];
+const api=wvInit(root,{visible:1,onScene:i=>li.forEach(e=>e.classList.toggle("on",+e.dataset.wvi===i))});if(api)(root._api=api,li.forEach(e=>e.onclick=()=>{api.seek(+e.dataset.wvi);const r=root.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight)root.scrollIntoView({behavior:"smooth",block:"center"})}))}
+
 function flexSection(){const ft=[["🏆","Personal records","Every new PR on every lift becomes a trophy card."],["🔥","Streaks","2, 4, 8, 12 weeks in a row. Show the chain."],["🎮","Game high scores","11 Fit Hub games. Challenge your friends to beat you."],["⚡","Transformation","Every kilo lost, shown as a bold before-you-know-it card."],["📈","Progress","Stronger than your first log? The proof is a tap away."],["⭐","Levels & XP","Level up in Fit Hub and announce it."],["🌅","Early bird","25 sunrise workouts deserve applause."],["💯","Perfect days","All 5 daily quests done. Flex it."]];
  return`<section id="st-flex" class="fl-sec"><i class="fl-orb a"></i><i class="fl-orb b"></i><div class="st-wrap"><div class="rv"><span class="fl-tag"><i class="tp-dot"></i>NEW · FLEX MODE · INSIDE THE MEMBER PORTAL</span></div>
 <h2 class="fl-h rv">Don't just train.<br><em>FLEX IT.</em></h2><p class="fl-lead rv">Every PR, streak, high score and kilo lost turns into a <b>scroll-stopping card</b> with your name and photo. Post it to <b>Instagram</b>, send it on <b>WhatsApp</b> or save it in <b>HD</b>, in one tap.</p>
@@ -1173,6 +1294,7 @@ function siteHtml(msg){const base=PK.filter(p=>p[1]==="Base").sort((a,b)=>a[2]-b
 <div class="msg err">${msg||""}</div><button type="submit" style="width:100%;margin-top:10px;padding:13px" id="go">Sign in</button><p class="msg" style="text-align:center;margin-top:12px">Members: your phone number is your Login ID. First time, your password is your BIO ID; the app then asks you to set your own.</p></form></div></header>
 <div class="st-tick"><div><span>INDIA'S MOST AFFORDABLE GYM BRAND!</span><span>BREAK, HEAL, GROW, REPEAT!</span><span>🔥 NEW: FLEX YOUR WINS ON INSTAGRAM &amp; WHATSAPP</span><span>UNISEX MON–SAT 6:00 AM – 1:00 PM &amp; 5:00 PM – 10:00 PM</span><span>LADIES-ONLY MON–SAT 1:00 PM – 5:00 PM</span><span>INDIA'S MOST AFFORDABLE GYM BRAND!</span><span>BREAK, HEAL, GROW, REPEAT!</span><span>🔥 NEW: FLEX YOUR WINS ON INSTAGRAM &amp; WHATSAPP</span><span>UNISEX MON–SAT 6:00 AM – 1:00 PM &amp; 5:00 PM – 10:00 PM</span><span>LADIES-ONLY MON–SAT 1:00 PM – 5:00 PM</span></div></div>
 ${ofSection()}
+${wvSection()}
 ${flexSection()}
 ${smpSection()}
 <section id="st-daily" class="st-dl"><div class="st-wrap"><span class="dl-tag rv">⚡ YOUR DAILY NON-NEGOTIABLE</span><h2 class="st-h2 rv">Log in to your Member Portal <em>every single day</em></h2><p class="st-lead rv">Not just on workout days. The gym is closed on Sundays, but your portal never is. Water, protein, quests, games and your streak count 7 days a week. Small daily habits beat occasional bursts.</p>
@@ -1216,7 +1338,7 @@ ${mapSection()}
 ${contSection()}
 <section class="st-end"><div class="st-wrap"><h2 class="st-h2">Your workout starts with <em>a login</em>.</h2><p class="st-lead">Check in. Clear today's quests. Protect your streak. See your rank. All in the Member Portal, free for every member.</p><div class="dl-cta"><button type="button" data-go="lg"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M18 8h-1V6a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 0 1 6 0v2H9V6z"/></svg>Member login</button><button type="button" class="g" data-join>Become a member now!<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 4l-1.4 1.4L16.2 11H4v2h12.2l-5.6 5.6L12 20l8-8z"/></svg></button></div></div></section>
 ${rvSection()}<div class="st-fab"><span>Member? Log in today.</span><button type="button" data-go="lg">Log in now</button><a data-join href="#st-offers">Join now</a></div>${footSection()}</div>`}
-function siteInit(msg){try{flxInit()}catch(e){}const fill=()=>{const I=brandIcons();document.querySelectorAll("img[data-ic]").forEach(i=>{if(I[i.dataset.ic])i.src=I[i.dataset.ic]})};try{fill();if(!LG.complete)LG.onload=()=>{_ic=null;fill()}}catch(e){}
+function siteInit(msg){try{flxInit()}catch(e){}try{wvInitSite()}catch(e){}const fill=()=>{const I=brandIcons();document.querySelectorAll("img[data-ic]").forEach(i=>{if(I[i.dataset.ic])i.src=I[i.dataset.ic]})};try{fill();if(!LG.complete)LG.onload=()=>{_ic=null;fill()}}catch(e){}
  document.querySelectorAll("[data-pt]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-pt]").forEach(x=>x.classList.toggle("on",x===b));document.querySelectorAll(".st-pl").forEach(x=>x.classList.toggle("on",x.id==="st-pl-"+b.dataset.pt))});
 (function(){const B=document.getElementById("hbB");if(!B)return;let n=0,t=0,run=0,iv;const N=document.getElementById("hbN"),T=document.getElementById("hbT"),M=document.getElementById("hbM");let best=0;try{best=+localStorage.getItem("rcg_hbbest")||0}catch(e){}
 function end(){clearInterval(iv);run=0;B.textContent="PLAY AGAIN";const nb=n>best;if(nb){best=n;try{localStorage.setItem("rcg_hbbest",n)}catch(e){}}M.textContent=n+" taps! "+(nb?"🏆 New best!":"Best: "+best)+" · Log in to save scores and join the leaderboard."}
