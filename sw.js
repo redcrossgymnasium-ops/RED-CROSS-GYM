@@ -6,6 +6,7 @@ const keep = (r, res) => { if (res && res.status === 200 && res.type !== "opaque
 self.addEventListener("fetch", e => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== "GET" || r.headers.has("range")) return; // video seeking and partial requests go straight to the network
+  if (u.hostname === "api.nal.usda.gov") return; // live food search, never cache
   if (u.hostname === "script.google.com" || u.hostname.endsWith("googleusercontent.com")) return; // never cache live data
   if (u.origin === location.origin) { // the app page and its files: saved copy first, refreshed in the background
     e.respondWith(caches.match(r).then(hit => {
