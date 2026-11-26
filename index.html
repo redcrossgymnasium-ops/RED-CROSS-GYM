@@ -3402,12 +3402,45 @@ function fRender(){const o=$("#fit");if(!o)return;const f=FT.f,g=fGoal(f),xp=fXp
  o.innerHTML=`<div class="fh-top"><div class="r1"><b style="font-size:18px">💪 Fit Hub</b><span style="background:#fff0f1;color:#d9202e;border-radius:99px;padding:3px 10px;font-weight:800;font-size:13px">Lv ${lv}</span><span style="font-size:13px;font-weight:700">🔥 ${st}</span><button class="g" data-fa="close" style="margin-left:auto;padding:6px 14px">Close</button></div><div class="fh-xp"><i style="width:${Math.min(100,Math.round((xp-b0)/(nx-b0)*100))}%"></i></div><div style="font-size:11px;color:var(--mut);margin-top:3px">${xp} XP · ${nx-xp} to Level ${lv+1}</div></div><div class="fh-tabs">${T.map(([k,l])=>`<button class="${FT.tab===k?"":"g"}" data-fa="tab" data-v="${k}">${l}</button>`).join("")}</div><div class="fh-b">${({today:fTabToday,work:fTabWork,trainer:fTabTrainer,games:fTabGames,prog:fTabProg,board:fTabBoard})[FT.tab]()}</div>`;
  if(FT.tab==="board")fBoardLoad()}
 const fAsk=(h,ok)=>{const d=plain(h+'<div class="msg err" id="fe2"></div><button style="width:100%;margin-top:10px" id="fo">Save</button><button class="g" style="width:100%;margin-top:8px" id="fc2">Cancel</button>');d.style.zIndex=75;d.querySelector("#fc2").onclick=()=>d.remove();d.querySelector("#fo").onclick=()=>{const e=ok(d);if(e)d.querySelector("#fe2").textContent=e;else d.remove()};return d};
+function fWiz(kind){const F=kind==="f",P={dt:(FT.f&&FT.f.diet)||"",qm:"g",q:"",c:"",p:"",un:"glass",wq:""},ST=F?4:2;let s=1;
+const UN={ml:["Millilitres (ml)",1],l:["Litres (L)",1000],glass:["Glasses (250 ml)",250],bottle:["Bottles (500 ml)",500]};
+const d=plain('<div id="wz"></div>');d.style.zIndex=75;const W=d.querySelector("#wz");
+const big=(k,l,on)=>'<button type="button" data-k="'+k+'" class="'+(on?"":"g")+'" style="width:100%;margin:5px 0;padding:13px;font-size:15px;text-align:left">'+l+'</button>';
+const R=()=>{let h='<div style="display:flex;gap:5px;margin-bottom:10px">'+Array.from({length:ST},(_,i)=>'<i style="flex:1;height:5px;border-radius:9px;background:'+(i<s?"#d9202e":"#d9dde4")+'"></i>').join("")+'</div><div class="msg" style="margin:0 0 4px">Step '+s+' of '+ST+'</div>';
+ if(F){
+  if(s===1)h+='<h3 style="margin:0 0 8px">What type of food?</h3>'+Object.keys(DIET).map(k=>big("dt:"+k,DIET[k][0]+" "+(k==="nonveg"?"Non-vegetarian":DIET[k][1]),P.dt===k)).join("");
+  if(s===2)h+='<h3 style="margin:0 0 8px">How much?</h3><div class="fh-ch" style="margin-bottom:8px">'+big("qm:g","Grams",P.qm==="g").replace('width:100%','flex:1;width:auto').replace('margin:5px 0','margin:0')+big("qm:u","Units",P.qm==="u").replace('width:100%','flex:1;width:auto').replace('margin:5px 0','margin:0')+'</div><input id="wq" type="number" inputmode="decimal" min="0" placeholder="'+(P.qm==="g"?"e.g. 250 (grams)":"e.g. 2 (pieces, bowls, cups)")+'" value="'+P.q+'">';
+  if(s===3)h+='<h3 style="margin:0 0 8px">Calories</h3><input id="wq" type="number" inputmode="numeric" min="0" placeholder="kcal, e.g. 350" value="'+P.c+'">';
+  if(s===4)h+='<h3 style="margin:0 0 8px">Protein</h3><input id="wq" type="number" inputmode="decimal" min="0" placeholder="grams, e.g. 20 (0 if unknown)" value="'+P.p+'">';
+ }else{
+  if(s===1)h+='<h3 style="margin:0 0 8px">Choose the unit</h3>'+Object.keys(UN).map(k=>big("un:"+k,UN[k][0],P.un===k)).join("");
+  if(s===2){const ml=Math.round((+P.wq||0)*UN[P.un][1]);h+='<h3 style="margin:0 0 8px">How many '+UN[P.un][0].split(" (")[0].toLowerCase()+'?</h3><input id="wq" type="number" inputmode="decimal" min="0" placeholder="e.g. 2" value="'+P.wq+'"><div id="wml" class="msg" style="margin-top:6px"><b>'+ml+' ml</b> will be added</div>'}
+ }
+ h+='<div id="wer" class="msg err"></div><div style="display:flex;gap:8px;margin-top:10px">'+(s>1?'<button type="button" class="g" data-a="back" style="flex:1">Back</button>':'<button type="button" class="g" data-a="x" style="flex:1">Cancel</button>')+'<button type="button" data-a="next" style="flex:2">'+(s===ST?"Log "+(F?"food":"water"):"Next")+'</button></div>';
+ W.innerHTML=h;const i=W.querySelector("#wq");if(i){i.focus();i.oninput=()=>{if(!F){P.wq=i.value;const e=W.querySelector("#wml");if(e)e.innerHTML="<b>"+Math.round((+i.value||0)*UN[P.un][1])+" ml</b> will be added"}}}};
+const take=()=>{const i=W.querySelector("#wq");return i?i.value.trim():""};
+const bad=m=>{W.querySelector("#wer").textContent=m;return 1};
+W.onclick=e=>{const b=e.target.closest("button");if(!b)return;const a=b.dataset.a,k=b.dataset.k;
+ if(k){const[x,y]=k.split(":");if(x==="dt")P.dt=y;if(x==="qm"){P.q=take()||P.q;P.qm=y}if(x==="un")P.un=y;if(x==="dt"||x==="un"){s++}R();return}
+ if(a==="x"){d.remove();return}
+ if(a==="back"){if(F){if(s===2)P.q=take();if(s===3)P.c=take();if(s===4)P.p=take()}else P.wq=take();s--;R();return}
+ if(a==="next"){
+  if(F){
+   if(s===1&&!P.dt)return bad("Choose one");
+   if(s===2){P.q=take();if(!(+P.q>0&&+P.q<=10000))return bad("Enter the quantity")}
+   if(s===3){P.c=take();if(!(+P.c>=0&&+P.c<=5000&&P.c!==""))return bad("Enter calories (0 to 5000)")}
+   if(s===4){P.p=take();const p=P.p===""?0:+P.p;if(!(p>=0&&p<=400))return bad("Enter protein in grams");
+    const c=Math.round(+P.c),pp=Math.round(p),q=(+P.q)+(P.qm==="g"?" g":+P.q===1?" unit":" units"),n=(P.dt==="nonveg"?"Non-veg":DIET[P.dt][1])+" · "+q;
+    FT.f.diet=P.dt;FT.prof=1;fMut(b=>{b.m.push({n:n,c:c,p:pp});b.c+=c;b.p+=pp});d.remove();toast("✅ Logged "+c+" kcal · "+pp+" g protein");return}
+   s++;R();return}
+  s===1?(s=2,R()):(()=>{P.wq=take();const ml=Math.round((+P.wq||0)*UN[P.un][1]);if(!(ml>0&&ml<=5000))return bad("Enter a valid amount (up to 5 L)");fMut(b=>{b.w+=ml});d.remove();toast("💧 +"+ml+" ml logged")})()}};
+R()}
 function fTabToday(){const f=FT.f,g=fGoal(f),d=fD(f,FT.day),q=fQ(d,g),isT=FT.day===fIso(0),diet=f.diet,wk=[0,1,2,3,4,5,6].map(i=>fD(f,fIso(i))),cm=wk.filter(x=>x.ch===1||x.cm).length,cd=wk.filter(x=>x.ch===2).length;
  const lab=isT?"Today":new Date(FT.day+"T00:00:00").toLocaleDateString("en-GB",{weekday:"short",day:"2-digit",month:"short"}),back=(()=>{const o=Math.round((new Date(fIso(0))-new Date(FT.day))/864e5);return o})();
  return`<div class="fh-c" style="display:flex;align-items:center;gap:8px"><button class="g" data-fa="dayb" ${back>=6?"disabled":""} style="padding:6px 14px">‹</button><b style="flex:1;text-align:center">${lab}</b><button class="g" data-fa="dayf" ${isT?"disabled":""} style="padding:6px 14px">›</button></div>
 ${fTrPromo()}<div class="fh-c"><h3>🎯 Daily quests</h3>${q.map(x=>{const ok=fDone(x,d),p=Math.min(100,Math.round(x.a/x.b*100));return`<div class="fh-q${ok?" ok":""}"><div class="ic">${ok?"✅":x.i}</div><div class="tx"><b>${x.n}</b> <small>${x.a}${x.mx?" / "+x.b+" kcal":" / "+x.b+" "+x.u}</small><div class="bar"><i style="width:${p}%"></i></div></div></div>`}).join("")}${d.ch===2?'<p class="msg" style="margin:6px 0 0">🎉 Cheat day: calories are not counted today. Enjoy it, back on track tomorrow!</p>':""}<div style="text-align:right"><button class="g" data-fa="goals" style="padding:5px 12px;font-size:12px">⚙ Set goals</button></div></div>
-<div class="fh-c"><h3>💧 Water <small class="msg">${d.w} / ${g.w} ml</small></h3><div class="fh-ch"><button data-fa="water" data-v="250">+250</button><button data-fa="water" data-v="500">+500</button><button data-fa="water" data-v="1000">+1 L</button><button class="g" data-fa="water" data-v="-250">Undo</button></div></div>
-<div class="fh-c"><h3>🍽 Food &amp; protein</h3>${diet?"":'<p class="msg" style="margin:0 0 8px"><b>Choose your diet</b> to get food suggestions:</p>'}<div class="fh-ch" style="margin-bottom:10px">${Object.keys(DIET).map(k=>`<button class="${diet===k?"":"g"}" data-fa="diet" data-v="${k}">${DIET[k][0]} ${DIET[k][1]}</button>`).join("")}</div>${diet?`<div class="fh-ch">${FOODS[diet].map((x,i)=>`<button class="g" data-fa="food" data-v="${i}" style="font-size:13px;padding:8px 12px">${x[0]}<br><small class="msg">${x[1]} kcal · ${x[2]}g P</small></button>`).join("")}</div>`:""}<button class="g" data-fa="custom" style="margin-top:10px;width:100%">➕ Add my own food</button><div style="margin-top:8px;font-size:14px"><b>${d.c}</b> kcal · <b>${d.p}</b> g protein</div>${d.m.map((m,i)=>`<div style="display:flex;gap:8px;align-items:center;padding:5px 0;border-top:1px solid var(--bd);font-size:13px"><span style="flex:1">${esc(m.n)}</span><span class="msg">${m.c} kcal · ${m.p}g</span><button class="g" data-fa="mdel" data-v="${i}" style="padding:2px 9px">✕</button></div>`).join("")}</div>
+<div class="fh-c"><h3>💧 Water <small class="msg">${d.w} / ${g.w} ml</small></h3><div class="fh-ch"><button data-fa="wizw" style="flex:1">💧 Log water</button><button class="g" data-fa="water" data-v="-250">Undo</button></div></div>
+<div class="fh-c"><h3>🍽 Food &amp; protein</h3><button data-fa="wizf" style="width:100%">➕ Log food</button><div style="margin-top:10px;font-size:14px"><b>${d.c}</b> kcal · <b>${d.p}</b> g protein</div>${d.m.map((m,i)=>`<div style="display:flex;gap:8px;align-items:center;padding:5px 0;border-top:1px solid var(--bd);font-size:13px"><span style="flex:1">${esc(m.n)}</span><span class="msg">${m.c} kcal · ${m.p}g</span><button class="g" data-fa="mdel" data-v="${i}" style="padding:2px 9px">✕</button></div>`).join("")}</div>
 <div class="fh-c"><h3>🍕 Cheat corner</h3><p class="msg" style="margin:0 0 8px">Life is short. Log it honestly, no guilt. This week: <b>${cm}</b> cheat meal${cm===1?"":"s"} · <b>${cd}</b> cheat day${cd===1?"":"s"}${cd>1?" (try keeping it to one a week 😉)":""}</p>${d.cm?`<p style="margin:0 0 8px;font-size:14px">Today's cheat: <b>${esc(d.cm)}</b></p>`:""}<div class="fh-ch"><button data-fa="cheatm" style="background:#f59e0b">🍕 Log a cheat meal</button><button class="${d.ch===2?"":"g"}" data-fa="cheatd" style="${d.ch===2?"background:#7c3aed":""}">🎉 ${d.ch===2?"Cheat day ON":"Cheat day"}</button></div></div>
 ${fSleep(f,d,isT)}
 <div class="fh-c"><h3>🧘 Calm minute</h3><p class="msg" style="margin:0 0 8px">${d.br} min breathing today</p><button data-fa="game" data-v="breath" style="width:100%">Start breathing game</button></div>${fSyncCard()}`}
@@ -3493,6 +3526,9 @@ async function fBoardLoad(){if(FT.board&&Date.now()-FT.boardT<60000)return;FT.bo
 const FA={close:()=>fitClose(),tab:v=>{FT.tab=v;fRender();const o=$("#fit");if(o)o.scrollTop=0},
  dayb:()=>{fFlush();const t=new Date(FT.day+"T00:00:00");t.setDate(t.getDate()-1);const k=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");if(k>=fIso(6)){FT.day=k;fRender()}},
  dayf:()=>{fFlush();const t=new Date(FT.day+"T00:00:00");t.setDate(t.getDate()+1);const k=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");if(k<=fIso(0)){FT.day=k;fRender()}},
+
+ wizw:()=>fWiz("w"),
+ wizf:()=>fWiz("f"),
  water:v=>fMut(d=>{d.w=Math.max(0,d.w+(+v))}),
  diet:v=>{FT.f.diet=v;FT.prof=1;fSave();fRender();toast(DIET[v][0]+" "+DIET[v][1]+" menu ready")},
  food:v=>{const x=FOODS[FT.f.diet][+v];if(x)fMut(d=>{d.m.push({n:x[0],c:x[1],p:x[2]});d.c+=x[1];d.p+=x[2]})},
