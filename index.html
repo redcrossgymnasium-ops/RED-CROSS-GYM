@@ -1617,7 +1617,9 @@ go()}
 
 const EXA=(()=>{const D=Math.PI/180,FL=130,L={ua:26,fa:24,th:36,sn:36,to:44};
 const v=(l,a)=>[l*Math.cos(a*D),l*Math.sin(a*D)],ad=(a,b)=>[a[0]+b[0],a[1]+b[1]],mx=(a,b,f)=>[a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f];
-const norm=p=>{const r=Object.assign({t:-90,th:90,sn:90,fo:0,lift:0,hd:0},p);if(r.th2==null)r.th2=r.th;if(r.sn2==null)r.sn2=r.sn;if(r.ua==null)r.ua=r.uar!=null?r.t+r.uar:90;if(r.fa==null)r.fa=r.far!=null?r.t+r.far:r.ua;return r};
+const norm=p=>{const r=Object.assign({t:-90,th:90,sn:90,fo:0,lift:0,hd:0},p);if(r.th2==null)r.th2=r.th;if(r.sn2==null)r.sn2=r.sn;if(r.ua==null)r.ua=r.uar!=null?r.t+r.uar:90;if(r.fa==null)r.fa=r.far!=null?r.t+r.far:r.ua;if(r.hn==null)r.hn=r.fa;return r};
+const FD={hx:0,hy:58,f1:-9,y1:0,f2:9,y2:0,a:6,eb:0,s:0,ht:0,tw:0,lean:0},KF=["hx","hy","f1","y1","f2","y2","a","b","eb","s","ht","tw","lean"];
+const normF=p=>{const r=Object.assign({},FD,p);if(r.b==null)r.b=r.a;return r};
 const AN={
 squat:{a:[100,124,"f"],p:[{ua:0,fa:0},{t:-52,th:12,sn:108,ua:0,fa:0}],c:[1,.2],l:["Sit hips back and down, chest up","Drive up through your heels"]},
 chair:{a:[100,124,"f"],sc:"chair",p:[{ua:30,fa:120},{t:-85,th:0,sn:90,ua:30,fa:120}],c:[1,.2],l:["Sit down slowly, hips back","Stand up tall, no hands"]},
@@ -1633,8 +1635,8 @@ bench:{a:[110,95,"h"],sc:"bench",p:[{t:180,th:-10,sn:95,ua:-5,fa:-90},{t:180,th:
 ohpress:{a:[100,124,"f"],p:[{ua:70,fa:-80},{ua:-90,fa:-90}],c:[.2,1],l:["Bar at shoulders, core tight","Press straight overhead"]},
 row:{a:[100,124,"f"],p:[{t:-25,th:78,sn:100,ua:90,fa:90},{t:-25,th:78,sn:100,ua:200,fa:90}],c:[.2,1],l:["Pull elbows back past the ribs","Lower with control"]},
 seatrow:{a:[100,100,"h"],sc:"seat",pu:[210,96],p:[{t:-75,th:20,sn:20,ua:0,fa:0},{t:-100,th:20,sn:20,ua:160,fa:0}],c:[.2,1],l:["Pull handle to the belly, squeeze the back","Reach forward slowly"]},
-pulldown:{a:[100,100,"h"],sc:"seat",pu:[112,-30],p:[{t:-88,th:0,sn:90,ua:-80,fa:-80},{t:-95,th:0,sn:90,ua:110,fa:-60}],c:[.2,1],l:["Pull the bar to the upper chest","Let the arms rise slowly"]},
-pullup:{a:[110,-8,"w"],sc:"bar",p:[{t:-90,th:70,sn:160,ua:-90,fa:-90},{t:-92,th:70,sn:160,ua:110,fa:-20}],c:[.2,1],l:["Pull the chest to the bar","Lower to a full hang"]},
+pulldown:{a:[100,100,"h"],sc:"seat",pu:[112,8],p:[{t:-88,th:0,sn:90,ua:-80,fa:-80},{t:-95,th:0,sn:90,ua:110,fa:-60}],c:[.2,1],l:["Pull the bar to the upper chest","Let the arms rise slowly"]},
+pullup:{a:[110,20,"w"],sc:"bar",p:[{t:-90,th:90,sn:100,ua:-90,fa:-90},{t:-92,th:90,sn:105,ua:110,fa:-20}],c:[.2,1],l:["Pull the chest to the bar","Lower to a full hang"]},
 dip:{a:[110,50,"w"],sc:"bar2",p:[{t:-90,th:75,sn:100,ua:90,fa:90},{t:-80,th:65,sn:105,ua:150,fa:60}],c:[1,.3],l:["Lower until elbows reach 90 degrees","Press back up"]},
 curl:{a:[100,124,"f"],p:[{ua:90,fa:90},{ua:88,fa:-70}],c:[.1,1],l:["Curl up, elbows stay at the sides","Lower slowly"]},
 tripush:{a:[100,124,"f"],p:[{ua:90,fa:-20},{ua:90,fa:90}],c:[.2,1],l:["Push down until the arms are straight","Let the hands rise, elbows still"]},
@@ -1647,8 +1649,8 @@ calf:{a:[110,128,"t"],p:[{fo:0},{fo:42}],c:[.1,1],l:["Rise high onto the toes, p
 backext:{a:[100,72,"h"],sc:"pad",p:[{t:62,th:180,sn:180,uar:140,far:60},{t:-5,th:180,sn:180,uar:140,far:60}],c:[.1,1],l:["Rise until the body is straight","Lower slowly, do not over-arch"]},
 legext:{a:[100,100,"h"],sc:"seat",p:[{t:-92,th:0,sn:90,ua:90,fa:90},{t:-92,th:0,sn:0,ua:90,fa:90}],c:[.1,1],l:["Straighten the knee, squeeze the thigh","Lower slowly"]},
 legcurl:{a:[100,100,"h"],sc:"seat",p:[{t:-92,th:0,sn:0,ua:90,fa:90},{t:-92,th:0,sn:110,ua:90,fa:90}],c:[.1,1],l:["Curl the heels toward the glutes","Return slowly"]},
-jog:{a:[100,56,"h"],loop:1,bob:5,p:[{t:-80,th:-5,sn:100,th2:130,sn2:175,ua:140,fa:60},{t:-80,th:130,sn:175,th2:-5,sn2:100,ua:30,fa:-60}],c:[.5,.5],l:["Drive the knee, opposite arm forward","Switch sides, stay light on the feet"]},
-walk:{a:[100,54,"h"],loop:1,bob:2,p:[{t:-90,th:60,sn:95,th2:110,sn2:100,ua:60,fa:60},{t:-90,th:110,sn:100,th2:60,sn2:95,ua:120,fa:120}],c:[.4,.4],l:["Heel strike, arms swing naturally","Roll through the foot and swap"]},
+jog:{a:[100,122,"h"],loop:1,bob:5,p:[{t:-80,th:-5,sn:100,th2:130,sn2:175,ua:140,fa:60},{t:-80,th:130,sn:175,th2:-5,sn2:100,ua:30,fa:-60}],c:[.5,.5],l:["Drive the knee, opposite arm forward","Switch sides, stay light on the feet"]},
+walk:{a:[100,124,"h"],loop:1,bob:2,p:[{t:-90,th:60,sn:95,th2:110,sn2:100,ua:60,fa:60},{t:-90,th:110,sn:100,th2:60,sn2:95,ua:120,fa:120}],c:[.4,.4],l:["Heel strike, arms swing naturally","Roll through the foot and swap"]},
 bike:{a:[100,92,"h"],sc:"seat2",loop:1,p:[{t:-60,th:25,sn:95,th2:70,sn2:80,ua:30,fa:40},{t:-60,th:70,sn:80,th2:25,sn2:95,ua:30,fa:40}],c:[.5,.5],l:["Push down through the pedal","Pull up and around"]},
 jack:{a:[100,124,"f"],loop:1,p:[{ua:90,fa:90},{th:78,sn:100,ua:-100,fa:-100,lift:6}],c:[.4,.7],l:["Hop, arms sweep overhead","Land softly, arms down"]},
 burpee:{a:[100,124,"f"],loop:1,p:[{ua:90,fa:90},{t:-25,th:20,sn:108,ua:90,fa:90},{ua:-90,fa:-90,lift:16}],c:[.3,.9,.7],l:["Drop into a deep crouch, hands down","Explode up into a jump"]},
@@ -1664,22 +1666,85 @@ reach:{a:[100,124,"f"],hold:1,p:[{t:-95,ua:-95,fa:-95}],c:[.4],l:["Hold the stre
 chestst:{a:[100,124,"f"],hold:1,p:[{ua:150,fa:150}],c:[.4],l:["Open the chest, hold, breathe slowly"]},
 fold:{a:[100,124,"f"],hold:1,p:[{t:30,th:90,sn:90,ua:90,fa:90}],c:[.4],l:["Hinge forward, soft knees, breathe out"]},
 quadst:{a:[100,124,"f"],hold:1,p:[{th2:92,sn2:195,ua:60,fa:150}],c:[.4],l:["Heel toward the glute, knees together"]},
-lungehold:{a:[120,124,"f"],hold:1,p:[{t:-88,th:20,sn:100,th2:100,sn2:165,ua:90,fa:90}],c:[.4],l:["Sink the hips forward, breathe slowly"]}
+lungehold:{a:[120,124,"f"],hold:1,p:[{t:-88,th:20,sn:100,th2:100,sn2:165,ua:90,fa:90}],c:[.4],l:["Sink the hips forward, breathe slowly"]},
+hang:{a:[110,-30,"w"],sc:"barH",hold:1,p:[{t:-90,th:75,sn:100,ua:-90,fa:-90}],c:[.8],l:["Hang with relaxed shoulders and a strong grip"]},
+hangknee:{a:[110,-30,"w"],sc:"barH",p:[{t:-90,th:78,sn:100,ua:-90,fa:-90},{t:-100,th:5,sn:100,ua:-90,fa:-90}],c:[.1,1],l:["Curl the knees up toward the chest","Lower slowly, do not swing"]},
+hangleg:{a:[110,-30,"w"],sc:"barH",p:[{t:-90,th:80,sn:85,ua:-90,fa:-90},{t:-100,th:-4,sn:-4,ua:-90,fa:-90}],c:[.1,1],l:["Raise straight legs toward the bar","Lower with control"]},
+pistol:{a:[100,124,"f"],p:[{th2:0,sn2:0,ua:0,fa:0},{t:-60,th:12,sn:110,th2:0,sn2:0,ua:0,fa:0}],c:[1,.2],l:["Sit back on one leg, other leg straight out","Drive up through the heel"]},
+slrdl:{a:[100,124,"f"],p:[{ua:90,fa:90},{t:-15,th:80,sn:95,th2:178,sn2:178,ua:90,fa:90}],c:[1,.2],l:["Hinge forward, the free leg reaches straight back","Squeeze the glute to stand tall"]},
+nordic:{a:[70,120,"k"],sc:"pad2",p:[{t:-90,th:90,sn:180,ua:0,fa:0},{t:-22,th:158,sn:180,ua:0,fa:0}],c:[.2,1],l:["Lower the body forward as slowly as you can","Use the hands to push back up"]},
+vup:{a:[100,118,"h"],sc:"mat",p:[{t:180,th:0,sn:0,ua:180,fa:180},{t:226,th:-46,sn:-46,ua:-40,fa:-40}],c:[.1,1],l:["Lift legs and torso together, reach for the toes","Lower back down with control"]},
+flutter:{a:[100,118,"h"],sc:"mat",loop:1,p:[{t:195,th:-18,sn:-18,th2:-4,sn2:-4,uar:180,far:180},{t:195,th:-4,sn:-4,th2:-18,sn2:-18,uar:180,far:180}],c:[.7,.7],l:["Small fast kicks, lower back pressed down","Alternate legs, keep the core tight"]},
+hollow:{a:[100,118,"h"],sc:"mat",hold:1,p:[{t:200,th:-18,sn:-18,ua:196,fa:196}],c:[.9],l:["Hold: ribs down, lower back flat, arms overhead"]},
+rtwist:{a:[100,118,"h"],sc:"mat",loop:1,p:[{t:240,th:-35,sn:35,ua:10,fa:10},{t:240,th:-35,sn:35,ua:70,fa:70}],c:[.6,.9],l:["Lean back, rotate the torso to one side","Rotate to the other side, move from the ribs"]},
+bicycle:{a:[100,118,"h"],sc:"mat",loop:1,p:[{t:205,th:-60,sn:90,th2:-5,sn2:-5,uar:90,far:20},{t:205,th:-5,sn:-5,th2:-60,sn2:90,uar:90,far:20}],c:[.8,.8],l:["Elbow toward the opposite knee, other leg straight","Switch sides in a smooth pedalling motion"]},
+rollout:{a:[70,120,"k"],sc:"pad2",p:[{t:-90,th:90,sn:180,ua:70,fa:70},{t:-12,th:168,sn:180,ua:-8,fa:-8}],c:[.2,1],l:["Roll out slowly, hips and ribs stay in line","Pull back using the abs, not the hips"]},
+deadbug:{a:[110,118,"h"],sc:"mat",loop:1,p:[{t:180,th:-85,sn:0,th2:3,sn2:3,ua:180,fa:180},{t:180,th:3,sn:3,th2:-85,sn2:0,ua:-90,fa:-90}],c:[.7,.7],l:["Opposite arm and leg lower, back stays flat","Switch sides slowly"]},
+chop:{a:[100,124,"f"],pu:[118,-30],p:[{t:-88,ua:-50,fa:-50},{t:-65,th:65,sn:110,ua:70,fa:70}],c:[.2,1],l:["Start high, cable beside you","Chop down across the body, pivot the back foot"]},
+fly:{a:[110,95,"h"],sc:"bench",p:[{t:180,th:-10,sn:95,ua:-90,fa:-90},{t:180,th:-10,sn:95,ua:172,fa:182}],c:[1,.2],l:["Open the arms in a wide arc, slight elbow bend","Squeeze the chest to bring the arms together"]},
+pecdeck:{a:[100,100,"h"],sc:"seat",p:[{t:-92,th:0,sn:90,ua:170,fa:170},{t:-92,th:0,sn:90,ua:5,fa:5}],c:[.2,1],l:["Open the arms until the chest stretches","Squeeze the handles together in front"]},
+crossover:{a:[100,124,"f"],p:[{t:-80,th:75,sn:105,ua:205,fa:205},{t:-78,th:75,sn:105,ua:60,fa:60}],c:[.2,1],l:["Arms start wide and high","Sweep the hands together in front of the chest"]},
+chestmach:{a:[100,100,"h"],sc:"seat",p:[{t:-92,th:0,sn:90,ua:90,fa:-10},{t:-92,th:0,sn:90,ua:0,fa:0}],c:[.2,1],l:["Handles at chest height, shoulder blades back","Press forward without locking out hard"]},
+benchdip:{a:[94,100,"w"],sc:"bench3",p:[{t:-90,th:30,sn:30,ua:90,fa:90},{t:-92,th:30,sn:30,ua:120,fa:50}],c:[1,.2],l:["Lower the hips until elbows reach 90 degrees","Press back up, shoulders stay down"]},
+skull:{a:[110,95,"h"],sc:"bench",p:[{t:180,th:-10,sn:95,ua:-90,fa:180},{t:180,th:-10,sn:95,ua:-90,fa:270}],c:[.2,1],l:["Bend only the elbows, lower toward the forehead","Extend to straight arms, upper arms stay still"]},
+kick:{a:[100,124,"f"],p:[{t:-25,th:78,sn:100,ua:185,fa:90},{t:-25,th:78,sn:100,ua:185,fa:185}],c:[.2,1],l:["Upper arm fixed along the body","Straighten the elbow back and squeeze the triceps"]},
+wristcurl:{a:[100,100,"h"],sc:"seat",eqh:1,p:[{t:-60,th:0,sn:90,ua:75,fa:5,hn:50},{t:-60,th:0,sn:90,ua:75,fa:5,hn:-45}],c:[.1,1],l:["Forearm rests on the thigh, lower the weight with the wrist","Curl the wrist up, only the hand moves"]},
+sapull:{a:[100,124,"f"],pu:[112,-30],p:[{t:-78,th:80,sn:100,ua:-55,fa:-55},{t:-78,th:80,sn:100,ua:80,fa:80}],c:[.2,1],l:["Arms nearly straight, start overhead","Sweep the bar down to the thighs"]},
+invrow:{a:[70,60,"w"],sc:"bar3",p:[{t:180,th:8,sn:8,ua:-90,fa:-90},{t:180,th:8,sn:8,ua:100,fa:-40}],c:[.2,1],l:["Pull the chest to the bar, body stays straight","Lower with control"]},
+uprow:{a:[100,124,"f"],p:[{ua:90,fa:90},{ua:-25,fa:130}],c:[.2,1],l:["Lift the bar close to the body, elbows lead","Lower slowly. Stop at chest height"]},
+legpress:{a:[150,70,"f"],sc:"lpress",p:[{t:225,th:-60,sn:20,ua:30,fa:30},{t:225,th:-20,sn:-20,ua:30,fa:30}],c:[.2,1],l:["Lower until the knees reach about 90 degrees","Press through the whole foot, do not lock the knees"]},
+seatcalf:{a:[110,128,"t"],sc:"seat3",p:[{t:-90,th:0,sn:90,fo:0,ua:90,fa:90},{t:-90,th:0,sn:90,fo:42,ua:90,fa:90}],c:[.1,1],l:["Raise the heels as high as you can, pause","Lower the heels below the foot level"]},
+slbridge:{a:[130,124,"f"],sc:"mat2",p:[{t:170,th:-45,sn:80,th2:-70,sn2:-70,ua:0,fa:0},{t:148,th:-15,sn:80,th2:-70,sn2:-70,ua:0,fa:0}],c:[.1,1],l:["One leg straight up, drive the hips with the other","Lower slowly, hips stay level"]},
+thruster:{a:[100,124,"f"],p:[{t:-52,th:12,sn:108,ua:70,fa:-80},{ua:-90,fa:-90}],c:[.3,1],l:["Squat deep with the weight at the shoulders","Drive up and press overhead in one motion"]},
+rope:{a:[100,124,"f"],loop:1,p:[{ua:70,fa:20,lift:0},{ua:70,fa:-25,lift:8}],c:[.4,.6],l:["Small hops on the balls of the feet","Wrists turn the rope, elbows stay close"]},
+buttkick:{a:[100,56,"h"],loop:1,bob:3,p:[{t:-85,th:90,sn:100,th2:95,sn2:195,ua:120,fa:40},{t:-85,th:95,sn:195,th2:90,sn2:100,ua:60,fa:-40}],c:[.6,.6],l:["Kick the heel up toward the glute","Switch legs quickly"]},
+sled:{a:[60,124,"f"],sc:"sledbox",loop:1,p:[{t:-42,th:138,sn:138,th2:150,sn2:150,ua:-42,fa:-42},{t:-42,th:138,sn:138,th2:110,sn2:130,ua:-42,fa:-42}],c:[.7,.9],l:["Lean forward, arms straight, drive the leg back","Short powerful steps"]},
+bearcrawl:{a:[150,126,"w"],loop:1,p:[{t:-14,th:80,sn:150,th2:110,sn2:170,ua:90,fa:90},{t:-14,th:110,sn:170,th2:80,sn2:150,ua:90,fa:90}],c:[.6,.6],l:["Knees hover just off the floor, opposite hand and foot","Keep the hips low and move smoothly"]},
+swim:{a:[100,70,"h"],sc:"water",loop:1,p:[{t:0,th:178,sn:175,th2:172,sn2:170,ua:0,fa:0},{t:0,th:172,sn:170,th2:178,sn2:175,ua:90,fa:90},{t:0,th:178,sn:175,th2:172,sn2:170,ua:180,fa:180},{t:0,th:172,sn:170,th2:178,sn2:175,ua:270,fa:270}],c:[.6,.6,.6,.6],l:["Reach forward and pull the water back","Kick steadily, breathe to the side"]},
+taichi:{a:[100,124,"f"],loop:1,p:[{t:-90,th:80,sn:100,ua:90,fa:90},{t:-85,th:68,sn:108,ua:0,fa:-10},{t:-90,th:85,sn:95,ua:-60,fa:-70}],c:[.3,.3,.3],l:["Sink slightly, arms float forward","Rise slowly, breathe deeply"]},
+tgu:{a:[90,118,"h"],sc:"mat",p:[{t:180,th:0,sn:0,ua:-90,fa:-90},{t:-90,th:0,sn:0,ua:-90,fa:-90},{t:-90,th:90,sn:90,ua:-90,fa:-90,lift:60}],c:[.3,.6,.9],l:["Roll to the elbow, eyes on the weight","Sit up tall with the arm locked","Stand up, then reverse every step slowly","Reverse the steps slowly to the floor"]},
+superman:{a:[100,118,"h"],sc:"mat",p:[{t:180,th:0,sn:0,ua:180,fa:180},{t:198,th:-12,sn:-12,ua:198,fa:198}],c:[.1,1],l:["Lift arms, chest and legs together","Lower slowly, neck stays long"]},
+cobra:{a:[100,118,"h"],sc:"mat",hold:1,p:[{t:200,th:0,sn:0,ua:130,fa:20}],c:[.4],l:["Press up gently, hips on the floor, breathe"]},
+child:{a:[70,112,"h"],sc:"mat",hold:1,p:[{t:12,th:0,sn:180,ua:0,fa:0}],c:[.3],l:["Sit back on the heels, arms reach forward, breathe slowly"]},
+seathams:{a:[70,120,"h"],sc:"mat",hold:1,p:[{t:25,th:0,sn:0,ua:40,fa:40}],c:[.4],l:["Legs straight, hinge from the hips, reach for the feet"]},
+butterfly:{a:[100,120,"h"],sc:"mat",hold:1,p:[{t:-80,th:-30,sn:160,th2:-30,sn2:160,ua:40,fa:80}],c:[.3],l:["Soles together, sit tall, let the knees drop"]},
+pigeon:{a:[90,118,"h"],sc:"mat",hold:1,p:[{t:-25,th:5,sn:150,th2:180,sn2:180,ua:20,fa:20}],c:[.4],l:["Front shin across the body, back leg long, breathe"]},
+fig4:{a:[120,118,"h"],sc:"mat",hold:1,p:[{t:180,th:-65,sn:70,th2:-60,sn2:150,ua:-45,fa:-45}],c:[.4],l:["Ankle over the opposite knee, pull the legs toward you"]},
+happyb:{a:[120,118,"h"],sc:"mat",hold:1,p:[{t:180,th:-118,sn:-60,th2:-118,sn2:-60,ua:-110,fa:-90}],c:[.3],l:["Hold the feet, knees wide, rock gently"]},
+suptwist:{a:[110,118,"h"],sc:"mat",hold:1,p:[{t:180,th:-50,sn:100,ua:180,fa:180}],c:[.3],l:["Drop both knees to one side, shoulders stay down"]},
+seattwist:{a:[100,118,"h"],sc:"mat",hold:1,p:[{t:-90,th:0,sn:0,th2:-45,sn2:100,ua:60,fa:60}],c:[.3],l:["Sit tall, rotate over the bent knee, breathe"]},
+crossarm:{a:[100,124,"f"],hold:1,p:[{ua:5,fa:170}],c:[.3],l:["Pull the arm across the chest with the other hand"]},
+forearm:{a:[100,124,"f"],hold:1,p:[{ua:0,fa:0,hn:-75}],c:[.3],l:["Arm straight, palm out, gently pull the fingers back"]},
+latst:{a:[100,124,"f"],hold:1,p:[{t:-72,ua:-80,fa:-80}],c:[.3],l:["Reach overhead and lean away, breathe into the side"]},
+trist:{a:[100,124,"f"],hold:1,p:[{ua:-90,fa:150}],c:[.3],l:["Hand reaches down the back, press gently on the elbow"]},
+calfst:{a:[70,124,"f"],sc:"wallr",hold:1,p:[{t:-62,th:118,sn:118,th2:60,sn2:105,ua:0,fa:0}],c:[.4],l:["Back heel stays down, lean toward the wall"]},
+seatmarch:{a:[100,100,"h"],sc:"seat",loop:1,p:[{t:-92,th:-30,sn:90,th2:0,sn2:90,ua:90,fa:90},{t:-92,th:0,sn:90,th2:-30,sn2:90,ua:90,fa:90}],c:[.6,.6],l:["Lift one knee, sit tall","Switch legs in a steady rhythm"]},
+balance:{a:[100,124,"f"],hold:1,p:[{th2:-10,sn2:100,ua:20,fa:20}],c:[.6],l:["Stand on one leg, arms out, eyes on a fixed point"]},
+jacks:{fv:1,loop:1,p:[{f1:-8,f2:8,a:8},{f1:-34,f2:34,a:165}],c:[.4,.8],l:["Jump the feet wide, arms sweep overhead","Jump back in, arms down"]},
+latraise:{fv:1,p:[{a:8,eb:8},{a:88,eb:8}],c:[.1,1],l:["Raise the arms out to shoulder height, elbows slightly bent","Lower slowly"]},
+shrug:{fv:1,p:[{s:0},{s:8}],c:[.1,1],l:["Lift the shoulders straight up toward the ears","Lower slowly, no rolling"]},
+hipabd:{fv:1,p:[{f2:9,y2:0,a:25,b:25},{f2:36,y2:10,a:25,b:25}],c:[.1,1],l:["Lift the leg out to the side, toes forward","Lower with control, hold the chair"]},
+abductor:{fv:1,p:[{f1:-9,f2:9},{f1:-32,f2:32}],c:[.1,1],l:["Press the legs apart against the pads","Return slowly"]},
+adductor:{fv:1,p:[{f1:-32,f2:32},{f1:-9,f2:9}],c:[.1,1],l:["Squeeze the legs together","Open slowly with control"]},
+latlunge:{fv:1,p:[{f1:-9,f2:9},{hx:16,hy:86,f1:-38,f2:26}],c:[.2,1],l:["Step wide and sit back into one hip","Push off the bent leg to stand"]},
+sumo:{fv:1,p:[{hy:60,f1:-26,f2:26,a:10},{hy:94,f1:-26,f2:26,a:10}],c:[1,.2],l:["Wide stance, toes out, lower straight down","Drive up through the heels"]},
+neck:{fv:1,hold:1,p:[{ht:28}],c:[.3],l:["Ear toward the shoulder, relax the other shoulder"]},
+twist:{fv:1,p:[{tw:-55,a:88,b:88},{tw:55,a:88,b:88}],c:[.5,.5],l:["Rotate the torso to one side, hips stay facing forward","Rotate to the other side"]}
 };
 const SC={bench:'<rect x="48" y="104" width="100" height="8" rx="3" fill="#aab0bb"/><rect x="60" y="112" width="5" height="18" fill="#aab0bb"/><rect x="132" y="112" width="5" height="18" fill="#aab0bb"/>',
 seat:'<rect x="76" y="108" width="40" height="7" rx="3" fill="#aab0bb"/><rect x="94" y="115" width="5" height="15" fill="#aab0bb"/><rect x="74" y="60" width="5" height="50" rx="2" fill="#c5cad3"/>',
 seat2:'<rect x="76" y="100" width="30" height="6" rx="3" fill="#aab0bb"/><rect x="92" y="106" width="4" height="24" fill="#aab0bb"/><circle cx="130" cy="112" r="14" fill="none" stroke="#aab0bb" stroke-width="3"/>',
 chair:'<rect x="50" y="90" width="40" height="6" rx="3" fill="#aab0bb"/><rect x="50" y="52" width="5" height="44" rx="2" fill="#aab0bb"/><rect x="52" y="96" width="4" height="34" fill="#aab0bb"/><rect x="84" y="96" width="4" height="34" fill="#aab0bb"/>',
 wallh:'<rect x="46" y="10" width="6" height="120" fill="#c5cad3"/>',wallr:'<rect x="196" y="10" width="6" height="120" fill="#c5cad3"/>',
-bar:'<rect x="96" y="-10" width="30" height="4" rx="2" fill="#7a8190"/><rect x="92" y="-20" width="3" height="14" fill="#aab0bb"/><rect x="127" y="-20" width="3" height="14" fill="#aab0bb"/>',
+bar:'<rect x="96" y="18" width="30" height="4" rx="2" fill="#7a8190"/><rect x="92" y="8" width="3" height="14" fill="#aab0bb"/><rect x="127" y="8" width="3" height="14" fill="#aab0bb"/>',
 bar2:'<rect x="96" y="48" width="30" height="4" rx="2" fill="#7a8190"/><rect x="108" y="52" width="4" height="78" fill="#aab0bb"/>',
 mat:'<rect x="20" y="124" width="180" height="6" rx="3" fill="#d8dce3"/>',mat2:'<rect x="20" y="124" width="180" height="6" rx="3" fill="#d8dce3"/>',
-pad:'<rect x="80" y="82" width="46" height="8" rx="3" fill="#aab0bb"/><rect x="100" y="90" width="5" height="40" fill="#aab0bb"/>'};
+pad2:'<rect x="72" y="120" width="60" height="10" rx="4" fill="#c5cad3"/>',barH:'<rect x="96" y="-34" width="30" height="4" rx="2" fill="#7a8190"/><rect x="92" y="-44" width="3" height="14" fill="#aab0bb"/><rect x="127" y="-44" width="3" height="14" fill="#aab0bb"/>',bar3:'<rect x="54" y="58" width="32" height="4" rx="2" fill="#7a8190"/><rect x="52" y="58" width="3" height="72" fill="#aab0bb"/><rect x="85" y="58" width="3" height="72" fill="#aab0bb"/>',bench3:'<rect x="60" y="100" width="46" height="7" rx="3" fill="#aab0bb"/><rect x="66" y="107" width="5" height="23" fill="#aab0bb"/><rect x="96" y="107" width="5" height="23" fill="#aab0bb"/>',seat3:'<rect x="44" y="100" width="44" height="7" rx="3" fill="#aab0bb"/><rect x="60" y="107" width="5" height="23" fill="#aab0bb"/>',lpress:'<path d="M44 50L108 104L104 110L40 56Z" fill="#c5cad3"/><rect x="162" y="36" width="6" height="70" rx="2" fill="#7a8190"/>',sledbox:'<rect x="196" y="96" width="14" height="28" rx="3" fill="#c5cad3"/>',water:'<rect x="8" y="66" width="204" height="64" fill="#cfe6f7" opacity=".55"/>',pad:'<rect x="80" y="82" width="46" height="8" rx="3" fill="#aab0bb"/><rect x="100" y="90" width="5" height="40" fill="#aab0bb"/>'};
 const lerp=(a,b,f)=>a+(b-a)*f,ease=f=>f*f*(3-2*f);
-const KS=["t","th","sn","th2","sn2","ua","fa","fo","lift","hd"];
-function mix(a,b,f){const r={};KS.forEach(k=>r[k]=lerp(a[k],b[k],f));return r}
-function pts(P,an){const H=[0,0],K=ad(H,v(L.th,P.th)),A=ad(K,v(L.sn,P.sn)),T=ad(A,v(9,P.fo)),K2=ad(H,v(L.th,P.th2)),A2=ad(K2,v(L.sn,P.sn2)),S=ad(H,v(L.to,P.t)),Hd=ad(S,v(16,P.t+P.hd)),E=ad(S,v(L.ua,P.ua)),W=ad(E,v(L.fa,P.fa));
-const o={H,K,A,T,K2,A2,S,Hd,E,W},t={f:A,w:W,h:H,t:T}[an.a[2]],dx=an.a[0]-t[0],dy=an.a[1]-t[1]-P.lift;for(const k in o)o[k]=[o[k][0]+dx,o[k][1]+dy];return o}
+const KS=["t","th","sn","th2","sn2","ua","fa","fo","lift","hd","hn"];
+function mix(a,b,f,ks){const r={};(ks||KS).forEach(k=>r[k]=lerp(a[k],b[k],f));return r}
+function pts(P,an){const H=[0,0],K=ad(H,v(L.th,P.th)),A=ad(K,v(L.sn,P.sn)),T=ad(A,v(9,P.fo)),K2=ad(H,v(L.th,P.th2)),A2=ad(K2,v(L.sn,P.sn2)),S=ad(H,v(L.to,P.t)),Hd=ad(S,v(16,P.t+P.hd)),E=ad(S,v(L.ua,P.ua)),W=ad(E,v(L.fa,P.fa)),Hn=ad(W,v(9,P.hn));
+const o={H,K,A,T,K2,A2,S,Hd,E,W,Hn},t={f:A,w:W,h:H,t:T,k:K}[an.a[2]],dx=an.a[0]-t[0],dy=an.a[1]-t[1]-P.lift;for(const k in o)o[k]=[o[k][0]+dx,o[k][1]+dy];return o}
 function solved(P,an){const Q=Object.assign({},P);let lo=-75,hi=8;for(let i=0;i<22;i++){const m=(lo+hi)/2;Q.t=m;Q.th=Q.sn=m+180;if(Q.th2==null||an.solve)Q.th2=P.th2!=null&&P.th2!==90?P.th2:m+180;Q.fo=90;const p=pts(Q,an);if(p.A[1]>FL-9)lo=m;else hi=m}
 Q.t=(lo+hi)/2;Q.th=Q.sn=Q.t+180;Q.th2=P.th2!=null&&P.th2!==90?P.th2:Q.t+180;Q.sn2=P.sn2!=null&&P.sn2!==90?P.sn2:Q.t+180;Q.fo=90;return Q}
 const MN={ch:"Chest",sh:"Shoulders",bi:"Biceps",tr:"Triceps",fa:"Forearms",ab:"Abs",ob:"Obliques",qu:"Quadriceps",ha:"Hamstrings",ad:"Inner thighs",ca:"Calves",tp:"Traps",la:"Lats",rb:"Mid-back",lb:"Lower back",gl:"Glutes",fb:"Full body"};
@@ -1693,22 +1758,37 @@ function draw(an,P,c,x,eq){const p=pts(P,an),pr=parts(p),L1=(a,b,w,col,o)=>'<pat
 let s='<line x1="8" y1="'+FL+'" x2="212" y2="'+FL+'" stroke="#c5cad3" stroke-width="2"/>'+(SC[an.sc]||"");
 if(an.pu&&/Cable|Band/.test(x.e))s+='<path d="M'+an.pu[0]+' '+an.pu[1]+'L'+p.W[0].toFixed(1)+' '+p.W[1].toFixed(1)+'" stroke="#667085" stroke-width="1.4" stroke-dasharray="3 2"/><circle cx="'+an.pu[0]+'" cy="'+an.pu[1]+'" r="3" fill="#667085"/>';
 s+=L1(p.H,p.K2,11,"#e4e7ec")+L1(p.K2,p.A2,9,"#e4e7ec")+L1(p.H,p.K2,2,"#9aa1ae",.7)+L1(p.K2,p.A2,2,"#9aa1ae",.7)+'<g stroke="none">';
-s+=L1(p.H,p.S,17,"#dfe3ea")+L1(p.H,p.K,12,"#dfe3ea")+L1(p.K,p.A,10,"#dfe3ea")+L1(p.S,p.E,9,"#dfe3ea")+L1(p.E,p.W,8,"#dfe3ea")+L1(p.A,p.T,5,"#dfe3ea");
+s+=L1(p.H,p.S,17,"#dfe3ea")+L1(p.H,p.K,12,"#dfe3ea")+L1(p.K,p.A,10,"#dfe3ea")+L1(p.S,p.E,9,"#dfe3ea")+L1(p.E,p.W,8,"#dfe3ea")+L1(p.W,p.Hn,5,"#dfe3ea")+L1(p.A,p.T,5,"#dfe3ea");
 s+='<circle cx="'+p.Hd[0].toFixed(1)+'" cy="'+p.Hd[1].toFixed(1)+'" r="8" fill="#dfe3ea"/></g>';
 const pri=x.p[0]==="fb"?Object.keys(pr):x.p,sec=x.s;
 sec.forEach(k=>{if(pr[k])s+=el(pr[k],"#f5a623",.65,1+.12*c)+'</g>'});
 pri.forEach(k=>{if(pr[k]){const e=pr[k],kk=1+.4*c;s+=el(e,"#d9202e",(.55+.4*c).toFixed(2),kk)+'</g>'+el(e,"none",1,1)+fib(e,kk)}});
 s+=L1(p.H,p.S,2,"#6b7280",.55)+L1(p.H,p.K,2,"#6b7280",.55)+L1(p.K,p.A,2,"#6b7280",.55)+L1(p.S,p.E,2,"#6b7280",.55)+L1(p.E,p.W,2,"#6b7280",.55);
 [p.S,p.E,p.W,p.H,p.K,p.A].forEach(j=>s+='<circle cx="'+j[0].toFixed(1)+'" cy="'+j[1].toFixed(1)+'" r="3.2" fill="#fff" stroke="#2b303b" stroke-width="1.3"/>');
-const q=x.e;if(/Barbell|Plate/.test(q)){const a=eq==="S"?p.S:p.W;s+='<circle cx="'+a[0].toFixed(1)+'" cy="'+a[1].toFixed(1)+'" r="7" fill="#3b4150"/><circle cx="'+a[0].toFixed(1)+'" cy="'+a[1].toFixed(1)+'" r="2" fill="#fff"/>'}else if(/Dumbbell|Kettlebell/.test(q)){s+='<circle cx="'+p.W[0].toFixed(1)+'" cy="'+p.W[1].toFixed(1)+'" r="5" fill="#3b4150"/>'}
+const q=x.e,ew=an.eqh?p.Hn:p.W;if(/Barbell|Plate/.test(q)){const a=eq==="S"?p.S:ew;s+='<circle cx="'+a[0].toFixed(1)+'" cy="'+a[1].toFixed(1)+'" r="7" fill="#3b4150"/><circle cx="'+a[0].toFixed(1)+'" cy="'+a[1].toFixed(1)+'" r="2" fill="#fff"/>'}else if(/Dumbbell|Kettlebell|Ab wheel/.test(q)){s+='<circle cx="'+ew[0].toFixed(1)+'" cy="'+ew[1].toFixed(1)+'" r="5" fill="#3b4150"/>'}
 return s}
-function frame(key,u,x){const an=AN[key]||AN.stand;const ps=an.p.map(norm),n=ps.length;let P,c,lab,ctr;
-if(an.hold){P=Object.assign({},ps[0]);const b=Math.sin(u*6.283);P.lift=(an.bob||0.8)*b;c=an.c[0]+.12*b;lab=0}
-else if(an.loop){const s=u*n,i=Math.floor(s)%n,f=ease(s-Math.floor(s));const A=ps[i],B=ps[(i+1)%n];P=mix(A,B,f);c=lerp(an.c[i],an.c[(i+1)%n],f);lab=i%an.l.length;if(an.bob)P.lift=(P.lift||0)+an.bob*Math.abs(Math.sin(u*n*3.1416))}
-else{const tri=u<.5?u*2:(1-u)*2,f=ease(Math.min(1,Math.max(0,(tri-.08)/.84)));P=mix(ps[0],ps[1],f);c=lerp(an.c[0],an.c[1],f);lab=u<.5?0:1}
+
+function ik(h,f,l1,l2,sg){let dx=f[0]-h[0],dy=f[1]-h[1],d=Math.hypot(dx,dy);const m=l1+l2-.01;if(d>m){const k=m/d;f=[h[0]+dx*k,h[1]+dy*k];dx*=k;dy*=k;d=m}const a=(l1*l1-l2*l2+d*d)/(2*d),hh=Math.sqrt(Math.max(0,l1*l1-a*a)),ux=dx/d,uy=dy/d;return{K:[h[0]+ux*a-uy*hh*sg,h[1]+uy*a+ux*hh*sg],F:f}}
+function drawF(an,P,c,x){const cx=110,hx=cx+P.hx,hy=P.hy,hL=[hx-8,hy],hR=[hx+8,hy],lg=ik(hL,[cx+P.f1,130-P.y1],36,36,1),rg=ik(hR,[cx+P.f2,130-P.y2],36,36,-1),cw=Math.cos(P.tw*D),sx=hx+P.lean+Math.sin(P.tw*D)*8,sy=hy-44-P.s,sL=[sx-16*cw,sy],sR=[sx+16*cw,sy],eL=ad(sL,[-26*Math.sin(P.a*D),26*Math.cos(P.a*D)]),wL=ad(eL,[-24*Math.sin((P.a+P.eb)*D),24*Math.cos((P.a+P.eb)*D)]),eR=ad(sR,[26*Math.sin(P.b*D),26*Math.cos(P.b*D)]),wR=ad(eR,[24*Math.sin((P.b+P.eb)*D),24*Math.cos((P.b+P.eb)*D)]),mid=[(sL[0]+sR[0])/2,sy],hd=[mid[0]+17*Math.sin(P.ht*D),mid[1]-17*Math.cos(P.ht*D)];
+const L1=(a,b,w,col,o)=>'<path d="M'+a[0].toFixed(1)+' '+a[1].toFixed(1)+'L'+b[0].toFixed(1)+' '+b[1].toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round" opacity="'+(o||1)+'"/>',tc=[hx,hy],ts=[sx,sy];
+const pr={ch:seg([sL[0],sy+9],[sR[0],sy+9],0,1,8,0,1),ab:seg(ts,tc,.15,.6,7,0,1),ob:seg([sL[0]+2,sy+8],[hL[0]+1,hy-2],.1,.9,5,0,1),la:seg([sL[0]+3,sy+6],[hL[0]+3,hy-10],.05,.7,5,0,1),rb:seg(ts,tc,.1,.6,8,0,1),lb:seg(ts,tc,.5,1,7,0,1),tp:seg(sL,sR,0,1,6,-4,1),sh:{x:sL[0],y:sL[1],rx:7.5,ry:7.5,a:0},gl:seg(hL,hR,-.2,1.2,7,0,1),
+qu:seg(hL,lg.K,.1,.9,6.5,0,1),ha:seg(hL,lg.K,.1,.9,6.5,0,1),ad:seg(hL,lg.K,.2,.9,5,2,1),ca:seg(lg.K,lg.F,.1,.85,5.5,0,1),bi:seg(sL,eL,.1,.9,5.2,0,1),tr:seg(sL,eL,.1,.9,5.2,0,1),fa:seg(eL,wL,.1,.9,4.5,0,1)};
+const dbl=e=>e,sy2={};let s='<line x1="8" y1="130" x2="212" y2="130" stroke="#c5cad3" stroke-width="2"/>'+'<g stroke="none">'+L1(hL,lg.K,11,"#dfe3ea")+L1(lg.K,lg.F,9,"#dfe3ea")+L1(hR,rg.K,11,"#dfe3ea")+L1(rg.K,rg.F,9,"#dfe3ea")+L1(ts,tc,24,"#dfe3ea")+L1(sL,eL,9,"#dfe3ea")+L1(eL,wL,8,"#dfe3ea")+L1(sR,eR,9,"#dfe3ea")+L1(eR,wR,8,"#dfe3ea")+'<circle cx="'+hd[0].toFixed(1)+'" cy="'+hd[1].toFixed(1)+'" r="8" fill="#dfe3ea"/></g>';
+const mir=e=>({x:2*(hx+(P.lean/2))-e.x,y:e.y,rx:e.rx,ry:e.ry,a:-e.a});
+const pri=x.p[0]==="fb"?Object.keys(pr):x.p,sec=x.s;
+sec.forEach(k=>{if(pr[k]){s+=el(pr[k],"#f5a623",.65,1+.12*c)+'</g>';if(!/^(ch|ab|tp|rb|lb|gl)$/.test(k))s+=el(mir(pr[k]),"#f5a623",.65,1+.12*c)+'</g>'}});
+pri.forEach(k=>{if(pr[k]){const kk=1+.4*c,m=/^(ch|ab|tp|rb|lb|gl)$/.test(k);[pr[k]].concat(m?[]:[mir(pr[k])]).forEach(e=>{s+=el(e,"#d9202e",(.55+.4*c).toFixed(2),kk)+'</g>'+el(e,"none",1,1)+fib(e,kk)})}});
+s+=L1(ts,tc,2,"#6b7280",.55)+L1(sL,sR,2,"#6b7280",.55)+L1(hL,hR,2,"#6b7280",.55)+L1(hL,lg.K,2,"#6b7280",.55)+L1(lg.K,lg.F,2,"#6b7280",.55)+L1(hR,rg.K,2,"#6b7280",.55)+L1(rg.K,rg.F,2,"#6b7280",.55)+L1(sL,eL,2,"#6b7280",.55)+L1(eL,wL,2,"#6b7280",.55)+L1(sR,eR,2,"#6b7280",.55)+L1(eR,wR,2,"#6b7280",.55);
+[sL,sR,eL,eR,wL,wR,hL,hR,lg.K,rg.K,lg.F,rg.F].forEach(j=>s+='<circle cx="'+j[0].toFixed(1)+'" cy="'+j[1].toFixed(1)+'" r="3.2" fill="#fff" stroke="#2b303b" stroke-width="1.3"/>');
+if(/Dumbbell|Kettlebell/.test(x.e))[wL,wR].forEach(j=>s+='<circle cx="'+j[0].toFixed(1)+'" cy="'+j[1].toFixed(1)+'" r="5" fill="#3b4150"/>');return s}
+function frame(key,u,x){const an=AN[key]||AN.stand;const F=!!an.fv,ps=an.p.map(F?normF:norm),n=ps.length,ks=F?KF:KS;let P,c,lab,ctr;
+if(an.hold){P=Object.assign({},ps[0]);const b=Math.sin(u*6.283);if(!F)P.lift=(an.bob||0.8)*b;c=an.c[0]+.12*b;lab=0}
+else if(an.loop){const s=u*n,i=Math.floor(s)%n,f=ease(s-Math.floor(s));const A=ps[i],B=ps[(i+1)%n];P=mix(A,B,f,ks);c=lerp(an.c[i],an.c[(i+1)%n],f);lab=i%an.l.length;if(an.bob&&!F)P.lift=(P.lift||0)+an.bob*Math.abs(Math.sin(u*n*3.1416))}
+else{const m=ps.length-1,tri=u<.5?u*2:(1-u)*2,tt=Math.min(1,Math.max(0,(tri-.08)/.84))*m,i=Math.min(m-1,Math.floor(tt)),f=ease(tt-i);P=mix(ps[i],ps[i+1],f,ks);c=lerp(an.c[i],an.c[i+1],f);lab=m>1?(u<.5?i:an.l.length-1):(u<.5?0:1)}
+if(F)return{svg:drawF(an,P,c,x),cap:an.l[lab]||an.l[0],hold:!!an.hold,c:c};
 if(an.solve){const R=solved(P,an);P.t=R.t;P.th=R.th;P.sn=R.sn;P.th2=R.th2;P.sn2=R.sn2;P.fo=90}
-const eq=/back squat|front squat/i.test(x.n)?"S":"W";return{svg:draw(an,P,c,x,eq),cap:an.l[lab]||an.l[0],hold:!!an.hold,c:c}}
-const RULES=[[/butterfly|child|happy baby|figure-four|pigeon|calf stretch/,"fold"],[/hip flexor/,"lungehold"],[/overhead triceps stretch/,"reach"],[/pallof/,"punch"],[/cable glute kickback/,"quad4"],[/seated marching/,"walk"],[/single-leg stand|hip abduction/,"legswing"],[/split squat/,"lunge"],[/wall push/,"wallpush"],[/wall sit/,"wallsit"],[/mountain|bear crawl/,"mclimb"],[/plank|copenhagen/,"plank"],[/push-up|pike|archer|diamond|scapular/,"pushup"],[/dips/,"dip"],[/pull-up|chin-up|dead hang/,"pullup"],[/pulldown|straight-arm/,"pulldown"],[/seated cable row|seated band row|chest-supported|rowing machine|face pull/,"seatrow"],[/row/,"row"],[/kettlebell swing/,"swing"],[/deadlift|romanian|good morning|stiff|nordic/,"hinge"],[/back extension|superman/,"backext"],[/chair squat/,"chair"],[/jump squat|box jump|thruster/,"jumpsq"],[/squat|leg press|hack/,"squat"],[/lunge|step-up/,"lunge"],[/calf|heel raise/,"calf"],[/hip thrust|bridge|frog/,"bridge"],[/leg curl/,"legcurl"],[/leg extension|abductor|adductor/,"legext"],[/curl/,"curl"],[/overhead triceps|skull/,"trioh"],[/pushdown|kickback|triceps/,"tripush"],[/reverse dumbbell fly/,"row"],[/incline dumbbell press|decline dumbbell press/,"bench"],[/bench|fly|chest press|pec deck|crossover|svend/,"bench"],[/press|arnold|landmine/,"ohpress"],[/leg raise|knee raise|flutter|hollow|v-up/,"legraise"],[/raise/,"raise"],[/crunch|russian|ab wheel|dead bug|pallof|woodchop|sit-up/,"crunch"],[/shrug|farmer|turkish/,"carry"],[/brisk|walk|elliptical|stair|sled/,"walk"],[/jog|running|high knees|butt kicks|treadmill/,"jog"],[/bike|cycling/,"bike"],[/jumping jack|jump rope/,"jack"],[/burpee/,"burpee"],[/battle rope/,"ropes"],[/boxing/,"punch"],[/swimming|arm circle|shoulder roll|dislocate|wall angels/,"armcircle"],[/leg swing|hip circle|knee hug|ankle|inchworm|world/,"legswing"],[/cat-cow|bird dog|donkey|fire hydrant|clamshell|lateral walk|side-lying/,"quad4"],[/quad stretch/,"quadst"],[/hamstring|calf stretch|child|happy|butterfly|figure|pigeon/,"fold"],[/hip flexor/,"lungehold"],[/chest|doorway/,"chestst"],[/stretch|cobra|twist|spinal|breathing|tai chi|open book/,"reach"],[/pull-apart/,"row"]];
+const eq=/back squat|front squat|good morning/i.test(x.n)?"S":"W";return{svg:draw(an,P,c,x,eq),cap:an.l[lab]||an.l[0],hold:!!an.hold,c:c}}
+const RULES=[[/hanging knee raise/,"hangknee"],[/hanging leg raise/,"hangleg"],[/dead hang/,"hang"],[/pistol/,"pistol"],[/single-leg romanian/,"slrdl"],[/nordic/,"nordic"],[/v-up/,"vup"],[/flutter/,"flutter"],[/hollow/,"hollow"],[/russian/,"rtwist"],[/bicycle crunch/,"bicycle"],[/ab wheel/,"rollout"],[/dead bug/,"deadbug"],[/woodchop/,"chop"],[/pec deck/,"pecdeck"],[/crossover/,"crossover"],[/dumbbell fly|cable fly/,"fly"],[/chest press machine/,"chestmach"],[/bench dips/,"benchdip"],[/skull/,"skull"],[/kickback/,"kick"],[/wrist curl/,"wristcurl"],[/straight-arm/,"sapull"],[/inverted row/,"invrow"],[/upright row/,"uprow"],[/leg press/,"legpress"],[/seated calf/,"seatcalf"],[/single-leg glute bridge/,"slbridge"],[/thruster/,"thruster"],[/jump rope/,"rope"],[/butt kicks/,"buttkick"],[/sled/,"sled"],[/bear crawl/,"bearcrawl"],[/swimming/,"swim"],[/tai chi/,"taichi"],[/turkish/,"tgu"],[/superman/,"superman"],[/cobra/,"cobra"],[/child/,"child"],[/seated hamstring/,"seathams"],[/butterfly/,"butterfly"],[/pigeon/,"pigeon"],[/figure-four/,"fig4"],[/happy baby/,"happyb"],[/supine spinal/,"suptwist"],[/seated spinal/,"seattwist"],[/cross-body/,"crossarm"],[/forearm stretch/,"forearm"],[/lat stretch/,"latst"],[/overhead triceps stretch/,"trist"],[/calf stretch/,"calfst"],[/seated marching/,"seatmarch"],[/single-leg stand/,"balance"],[/jumping jack/,"jacks"],[/lateral raise/,"latraise"],[/shrug/,"shrug"],[/hip abduction/,"hipabd"],[/abductor machine/,"abductor"],[/adductor machine/,"adductor"],[/lateral lunge/,"latlunge"],[/sumo squat/,"sumo"],[/neck side/,"neck"],[/torso twist|open book/,"twist"],[/wall push/,"wallpush"],[/wall sit/,"wallsit"],[/mountain|bear crawl/,"mclimb"],[/plank|copenhagen/,"plank"],[/push-up|pike|archer|diamond|scapular/,"pushup"],[/dips/,"dip"],[/pull-up|chin-up|dead hang/,"pullup"],[/pulldown|straight-arm/,"pulldown"],[/seated cable row|seated band row|chest-supported|rowing machine|face pull/,"seatrow"],[/row/,"row"],[/kettlebell swing/,"swing"],[/deadlift|romanian|good morning|stiff|nordic/,"hinge"],[/back extension|superman/,"backext"],[/chair squat/,"chair"],[/jump squat|box jump|thruster/,"jumpsq"],[/squat|leg press|hack/,"squat"],[/lunge|step-up/,"lunge"],[/calf|heel raise/,"calf"],[/hip thrust|bridge|frog/,"bridge"],[/leg curl/,"legcurl"],[/leg extension|abductor|adductor/,"legext"],[/curl/,"curl"],[/overhead triceps|skull/,"trioh"],[/pushdown|kickback|triceps/,"tripush"],[/press|arnold|landmine/,"ohpress"],[/leg raise|knee raise|flutter|hollow|v-up/,"legraise"],[/raise/,"raise"],[/crunch|russian|ab wheel|dead bug|pallof|woodchop|sit-up/,"crunch"],[/bench|fly|chest press|pec deck|crossover|svend/,"bench"],[/shrug|farmer|turkish/,"carry"],[/brisk|walk|elliptical|stair|sled/,"walk"],[/jog|running|high knees|butt kicks|treadmill/,"jog"],[/bike|cycling/,"bike"],[/jumping jack|jump rope/,"jack"],[/burpee/,"burpee"],[/battle rope/,"ropes"],[/boxing/,"punch"],[/swimming|arm circle|shoulder roll|dislocate|wall angels/,"armcircle"],[/leg swing|hip circle|knee hug|ankle|inchworm|world/,"legswing"],[/cat-cow|bird dog|donkey|fire hydrant|clamshell|lateral walk|side-lying/,"quad4"],[/quad stretch/,"quadst"],[/hamstring|calf stretch|child|happy|butterfly|figure|pigeon/,"fold"],[/hip flexor/,"lungehold"],[/chest|doorway/,"chestst"],[/stretch|cobra|twist|spinal|breathing|tai chi|open book/,"reach"],[/pull-apart/,"row"]];
 const GRP={ch:"bench",la:"row",rb:"row",tp:"carry",lb:"hinge",sh:"ohpress",bi:"curl",tr:"tripush",fa:"curl",ab:"crunch",ob:"crunch",qu:"squat",ha:"hinge",ad:"squat",ca:"calf",gl:"bridge",fb:"jog"};
 function pick(x){const n=x.n.toLowerCase();for(const r of RULES)if(r[0].test(n))return r[1];return GRP[x.p[0]]||"stand"}
 return{frame,pick,AN}})();
@@ -1829,13 +1909,13 @@ Abductor machine|gl||Machine|BI|Hw|3×12-15|Press the legs out. Hits the outer g
 Sumo squat|ad|qu,gl|Dumbbell|BI|MFHLw|3×10-12|Wide stance, toes out, drive up through the heels.
 Lateral lunge|ad|qu,gl|Bodyweight|BI|FLUmw|3×8-10 each|Step wide, sit back into one hip, keep the other leg straight.
 Copenhagen plank|ad|ob|Bench|A|MLmw|3×15-30 sec|Side plank with the top leg on a bench. Strong inner thighs.
-Side-lying leg raise|gl|ad|Bodyweight|B|LEw|3×12-15 each|Lift the top leg slowly with toes forward.
+Side-lying leg raise|gl||Bodyweight|B|LEw|3×12-15 each|Lift the top leg slowly with toes forward.
 Glute bridge|gl|ha,ab|Bodyweight|B|LEUFw|3×12-20|Feet flat, lift hips until body is straight, squeeze glutes.
 Barbell hip thrust|gl|ha,qu|Barbell|BIA|MHw|4×8-12|Upper back on a bench, drive hips up, chin tucked.
 Single-leg glute bridge|gl|ha|Bodyweight|BI|FLw|3×10-12 each|One foot on the floor, keep hips level.
 Cable glute kickback|gl|ha|Cable|BI|Hw|3×12-15 each|Kick back with a flat spine and squeeze at the end.
 Donkey kick|gl|ha|Bodyweight|B|FUw|3×12-15 each|On hands and knees, lift one heel to the ceiling.
-Fire hydrant|gl|ad|Bodyweight|B|UFw|3×12-15 each|On all fours, lift the knee out to the side.
+Fire hydrant|gl||Bodyweight|B|UFw|3×12-15 each|On all fours, lift the knee out to the side.
 Clamshell|gl||Band|B|LEUw|3×12-15 each|Lying on one side, open the top knee like a shell.
 Banded lateral walk|gl||Band|B|UFLw|3×10-12 steps|Band above knees, step sideways, stay low.
 Frog pump|gl|ad|Bodyweight|B|Fw|3×15-20|Soles together, knees out, thrust the hips up.
